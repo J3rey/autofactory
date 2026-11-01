@@ -6,7 +6,7 @@ import { findRunFile } from './keep-going.mjs'
 // shortcut: one run.json per checkout; two concurrent foreman runs in one checkout — last start wins. Upgrade to per-session files if that bites.
 export function claim(input, now) {
   try {
-    if (typeof input.prompt === 'string' && input.prompt.includes('autofactory:foreman')) {
+    if (typeof input.prompt === 'string' && input.prompt.trimStart().startsWith('/autofactory:foreman')) {
       const dir = path.join(input.cwd, '.claude', 'foreman')
       fs.mkdirSync(dir, { recursive: true })
       const stamp = now.toISOString()

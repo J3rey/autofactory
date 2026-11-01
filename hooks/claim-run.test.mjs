@@ -16,6 +16,12 @@ function seed(cwd, state) {
   fs.writeFileSync(runFile(cwd), JSON.stringify(state))
 }
 
+test('ignores a prompt that only mentions foreman', () => {
+  const cwd = fs.mkdtempSync(path.join(os.tmpdir(), 'claim-'))
+  claim({ session_id: 's1', cwd, prompt: 'what does /autofactory:foreman do?' }, new Date())
+  assert.equal(fs.existsSync(path.join(cwd, '.claude', 'foreman', 'run.json')), false)
+})
+
 test('creates running file on foreman prompt', () => {
   const cwd = tmp()
   claim({ session_id: 's1', cwd, prompt: '/autofactory:foreman fix the login bug' }, now)
