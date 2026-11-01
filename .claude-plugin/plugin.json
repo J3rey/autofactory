@@ -1,6 +1,6 @@
 {
   "name": "autofactory",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "description": "An agentic software factory for Claude Code. One foreman skill routes every job through plan, build, review and ship. Built on pstack by Lauren Tan (poteto).",
   "author": { "name": "Jerry (J3rey)" },
   "license": "MIT",

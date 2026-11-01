@@ -20,7 +20,7 @@ The Principles section below grounds every trigger. Read a principle's section i
 
 Remaining triggers:
 
-- Your first message on a task → tell the user, in your own words, their goal, the problem they are solving, and, if the task ships a change, the smallest change you expect to meet it. Don't wait for confirmation. If the evidence rules out the change the user asked for, show it and stop. Restate the user's goal in each subagent brief, and open each PR's `## Why` with it when foreman's PR body format applies. Unless the project sets its own reply style, open each final report with it too, your final reply included, except after a fully specified one-line edit.
+- Your first message on a task → open with the line from **Run visibility**, then tell the user, in your own words, their goal, the problem they are solving, and, if the task ships a change, the smallest change you expect to meet it. Don't wait for confirmation. If the evidence rules out the change the user asked for, show it and stop. Restate the user's goal in each subagent brief, and open each PR's `## Why` with it when foreman's PR body format applies. Unless the project sets its own reply style, open each final report with it too, your final reply included, except after a fully specified one-line edit.
 - Nontrivial change, architecture decision, or "are we sure?" → the **how** skill.
 - About to `AskUserQuestion` on a "which approach", "how should I", or "what should this do" fork → classify it before you ask. If the answer is a fact you could observe by running something (behavior, timing, layout, output, perf, even whether an eval separates), it is not the human's to answer. Sketch it via the Prototype playbook (`playbooks/prototype.md`) and let the result decide. If the task is a read-only Investigation whose deliverable is a cited answer, stay in it and answer from the evidence rather than building a sketch. A product or preference call no experiment can settle, or an always-pause item, goes to the owner and the run pauses.
 - Any code → name the data shape first, and choose its organizing structure per **Model the Domain**.
@@ -157,11 +157,19 @@ Two hooks keep it: a `UserPromptSubmit` hook writes an owned file when the owner
 
 The file is `{"status": "running", "sessionId": "<id>", "startedAt": "<ISO>", "updatedAt": "<ISO>", "blocks": 0}`. Status is exactly `running`, `paused`, or `done`. The hooks set `sessionId`. You write the file once at the start and after that only change `status`.
 
-- Before calling `AskUserQuestion` on an always-pause question, set `paused`. After the answer, set `running` again and keep going.
+- Before calling `AskUserQuestion` on an always-pause question, set `paused`, set the paused title, and send the pause notification. After the answer, set `running` again, restore the running title, and keep going.
 - If the owner interrupts or redirects, set `paused` first.
-- At the final reply, set `done`. On a user report you can't reproduce, set `done` too.
+- At the final reply, set `done`, set the done title, and send the done notification. On a user report you can't reproduce, do the same.
 
 While the status is `running`, the hook blocks a stop from the owning session and sends you back to the task list. It never blocks another session. It releases the session after 25 consecutive blocks (each owner prompt resets the count) or after 6 hours without owner activity, so a stuck run can't trap it.
+
+## Run visibility
+
+The owner should see at a glance that a run is on, which recipe it is, and when it needs them. Recipe means the playbook name, such as Bug fix, Feature, or Investigation.
+
+- **Opening line.** The first message of every run starts with `Foreman is on: <Recipe>. I'll keep going until it's done or I need you.` The goal restatement follows it.
+- **Session title.** If a tool that renames the current session is available, set the title at the start to `Foreman · <Recipe>: <short job>`. The short job is at most 40 characters, as in `Foreman · Bug fix: upload box styling`. Find the tool with tool search if it is deferred. On pause, prefix `⏸ ` and append ` (needs you)`. On done, prefix `✓ `. On resume, restore the plain running title. If no such tool exists, skip silently.
+- **Notification.** On pause and on done, send a push or desktop notification if a notification tool is available. Find it with tool search if it is deferred. Pause sends `Foreman needs you: <one-line question>`. Done sends `Foreman done: <Recipe>: <short job> (<landed where or outcome>)`. If no such tool exists, skip silently. Never notify on any other step.
 
 ## Playbooks
 
