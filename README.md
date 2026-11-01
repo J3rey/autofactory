@@ -1,2 +1,2 @@
-# night-shift
-Agent skills that keep shipping while you sleep: an agentic software factory for Claude Code.
+# autofactory
+An agentic software factory for Claude Code. One `foreman` skill routes every job through plan, build, review and ship.
