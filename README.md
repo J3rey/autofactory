@@ -15,6 +15,17 @@ An agentic software factory for Claude Code. One `foreman` skill routes every jo
 /autofactory:foreman <job>
 ```
 
+## How a run works
+
+1. `/autofactory:foreman <job>` starts it. A `UserPromptSubmit` hook writes `.claude/foreman/run.json` marked `running` for this session.
+2. Foreman reads `<repo>/.claude/foreman.md` if the project has one (template: `skills/foreman/references/project-file-template.md`). It maps steps to the project's own skills and adds pause items, sizing rules and proof rules.
+3. It matches the job to a recipe and copies the recipe's steps onto the task list.
+4. It works the steps. Reversible calls it makes itself and logs. Always-pause items (production writes, deploys, real spend, product calls, new dependencies, plus the project's list) set the run to `paused` and wait for your answer.
+5. A `Stop` hook sends a `running` session back to its task list instead of letting the turn end. It lets go when the run is `paused` or `done`, after 25 pushes, or when the file is 6 hours stale.
+6. The recipe ends by landing the work through the project's `land` step, then a plain report. The run is set to `done`.
+
+Add `.claude/foreman/` to the project's `.gitignore`.
+
 ## What's in it
 
 **Skills.** Start with `foreman`. It reads the others as a run needs them. Each can also be run directly as `/autofactory:<name>`.
@@ -43,4 +54,4 @@ An agentic software factory for Claude Code. One `foreman` skill routes every jo
 
 ## Credit
 
-Built on [pstack](https://github.com/backnotprop/pstack) by Lauren Tan (poteto), mirrored from [cursor/plugins](https://github.com/cursor/plugins/tree/main/pstack). MIT licensed; see `LICENSE` and `UPSTREAM.md`.
+Built on [pstack](https://github.com/backnotprop/pstack) by Lauren Tan (poteto), mirrored from [cursor/plugins](https://github.com/cursor/plugins/tree/main/pstack). Copied at upstream commit `25abb38559ddbabec563646224d09eff9a250eca` (2026-11-01), then trimmed to what foreman uses and rewritten for Claude Code. To pull later upstream changes, diff against a newer upstream commit by hand. MIT licensed; see `LICENSE`.
