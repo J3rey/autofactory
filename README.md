@@ -17,7 +17,7 @@ An agentic software factory for Claude Code. One `foreman` skill routes every jo
 
 ## How a run works
 
-1. `/autofactory:foreman <job>` starts it. Foreman marks the run as `running` in `.claude/foreman/run.json` itself as its first action. A `UserPromptSubmit` hook does the same when the command is typed directly.
+1. `/autofactory:foreman <job>` starts it. Foreman marks the run as `running` in `.claude/foreman/run.json` itself as its first action. A `UserPromptSubmit` hook does the same when the command is typed directly. A second run in the same folder is flagged as a clash, and foreman pauses for you instead of overwriting the first.
 2. Foreman reads `<repo>/.claude/foreman.md` if the project has one (template: `skills/foreman/references/project-file-template.md`). It maps steps to the project's own skills and adds pause items, sizing rules and proof rules.
 3. It matches the job to a recipe and copies the recipe's steps onto the task list.
 4. It works the steps. Reversible calls it makes itself and logs. Always-pause items (production writes, deploys, real spend, product calls, new dependencies, plus the project's list) set the run to `paused` and wait for your answer.

@@ -59,6 +59,70 @@ test('ignores other sessions', () => {
   assert.deepEqual(readState(cwd), before)
 })
 
+const foreman = '/autofactory:foreman fix the login bug'
+const clashFor = (status, startedAt) =>
+  `Foreman clash: another foreman run is already active in this folder (status ${status}, started ${startedAt}). Tell the owner before doing anything, and recommend running this job in a separate worktree.`
+
+test('flags a fresh running file owned by another session and leaves it alone', () => {
+  const cwd = tmp()
+  const before = { status: 'running', sessionId: 's1', startedAt: '2026-11-01T10:00:00Z', updatedAt: '2026-11-01T11:00:00Z', blocks: 2 }
+  seed(cwd, before)
+  const note = claim({ session_id: 's2', cwd, prompt: foreman }, now)
+  assert.equal(note, clashFor('running', before.startedAt))
+  assert.deepEqual(readState(cwd), before)
+})
+
+test('flags a fresh paused file owned by another session', () => {
+  const cwd = tmp()
+  const before = { status: 'paused', sessionId: 's1', startedAt: '2026-11-01T10:00:00Z', updatedAt: '2026-11-01T11:00:00Z', blocks: 0 }
+  seed(cwd, before)
+  assert.equal(claim({ session_id: 's2', cwd, prompt: foreman }, now), clashFor('paused', before.startedAt))
+  assert.deepEqual(readState(cwd), before)
+})
+
+test('flags a fresh unowned running file', () => {
+  const cwd = tmp()
+  const before = { status: 'running', startedAt: '2026-11-01T10:00:00Z', updatedAt: '2026-11-01T11:00:00Z', blocks: 0 }
+  seed(cwd, before)
+  assert.equal(claim({ session_id: 's2', cwd, prompt: foreman }, now), clashFor('running', before.startedAt))
+  assert.deepEqual(readState(cwd), before)
+})
+
+test('same session restarting foreman refreshes without a clash', () => {
+  const cwd = tmp()
+  seed(cwd, { status: 'running', sessionId: 's1', startedAt: '2026-11-01T10:00:00Z', updatedAt: '2026-11-01T11:00:00Z', blocks: 4 })
+  assert.equal(claim({ session_id: 's1', cwd, prompt: foreman }, now), undefined)
+  assert.deepEqual(readState(cwd), {
+    status: 'running',
+    sessionId: 's1',
+    startedAt: now.toISOString(),
+    updatedAt: now.toISOString(),
+    blocks: 0,
+  })
+})
+
+test('overwrites a stale other-session file', () => {
+  const cwd = tmp()
+  seed(cwd, { status: 'running', sessionId: 's1', startedAt: '2026-10-31T01:00:00Z', updatedAt: '2026-10-31T02:00:00Z', blocks: 4 })
+  assert.equal(claim({ session_id: 's2', cwd, prompt: foreman }, now), undefined)
+  assert.equal(readState(cwd).sessionId, 's2')
+})
+
+test('overwrites a done other-session file', () => {
+  const cwd = tmp()
+  seed(cwd, { status: 'done', sessionId: 's1', startedAt: '2026-11-01T10:00:00Z', updatedAt: '2026-11-01T11:00:00Z', blocks: 0 })
+  assert.equal(claim({ session_id: 's2', cwd, prompt: foreman }, now), undefined)
+  assert.equal(readState(cwd).sessionId, 's2')
+  assert.equal(readState(cwd).status, 'running')
+})
+
+test('never throws on a corrupt run file', () => {
+  const cwd = tmp()
+  fs.mkdirSync(path.dirname(runFile(cwd)), { recursive: true })
+  fs.writeFileSync(runFile(cwd), '{not json')
+  assert.doesNotThrow(() => claim({ session_id: 's2', cwd, prompt: foreman }, now))
+})
+
 test('never throws on unreadable dir', () => {
   assert.doesNotThrow(() =>
     claim({ session_id: 's1', cwd: '/definitely/not/a/real/dir/\0x', prompt: '/autofactory:foreman go' }, now),
