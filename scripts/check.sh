@@ -17,4 +17,10 @@ if grep -rnE 'poteto-mode|poteto-agent|pstack:' --exclude-dir=.git --exclude=UPS
   exit 1
 fi
 
+# (d) Claude models only: no Grok/GPT slugs in skills or agents
+if grep -rniE 'grok|gpt-[0-9]' skills agents; then
+  echo "check: non-Claude model slug found" >&2
+  exit 1
+fi
+
 echo "check: ok"

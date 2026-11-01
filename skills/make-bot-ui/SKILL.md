@@ -2,7 +2,7 @@
 name: make-bot-ui
 description: >-
   Use when building a custom UI (page, dashboard, buttons) that should wake a
-  Grok Bot over a webhook, when the user must provide a webhook sender key, or
+  bot over a webhook, when the user must provide a webhook sender key, or
   when exposing that UI on Tailscale.
 disable-model-invocation: true
 ---
@@ -52,7 +52,7 @@ After the user submits the secret, you do not see the value. The value is in tha
 
 ## Host the page on this computer
 
-Store `{url, key}` in that UI's own directory. Buttons POST to this local server. The local server, not the browser, POSTs to the Grok Bot webhook.
+Store `{url, key}` in that UI's own directory. Buttons POST to this local server. The local server, not the browser, POSTs to the bot webhook.
 
 Bind the server to `0.0.0.0:<port>`, not `127.0.0.1`. Tailscale peers cannot reach a localhost-only bind.
 
