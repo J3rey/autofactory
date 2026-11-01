@@ -31,4 +31,4 @@ After the sections, attach videos or screenshots when they prove a claim. Full S
 
 **Readiness.** Open every PR ready, never as a draft. A built-in PR tool can default to draft, so set `draft: false` on every creation call through it. With `gh`, omit `--draft`. If a PR still opens as a draft, mark it ready through the PR tool, or run `gh pr ready <number>`. Run `gh pr view <number>` before you refer to PR status.
 
-A subagent that opens a PR rereads its diff and cuts slop first, then posts the URL. It returns to the parent, unless it is an Autopilot-full owner. That owner carries its PR through merge per `playbooks/autopilot-full.md`.
+A subagent that opens a PR rereads its diff and cuts slop first, then posts the URL. It returns to the parent.
