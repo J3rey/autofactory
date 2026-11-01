@@ -23,4 +23,7 @@ if grep -rniE 'grok|gpt-[0-9]' skills agents; then
   exit 1
 fi
 
+# (e) the user-report recipe exists and is registered
+test -f skills/foreman/playbooks/user-report.md && grep -q 'user-report.md' skills/foreman/SKILL.md
+
 echo "check: ok"

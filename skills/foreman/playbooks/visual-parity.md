@@ -1,5 +1,7 @@
 ### Visual parity
 
+Opt-in: run only when the owner asks to match an approved mock (e.g. an artifact). The approved mock is the reference.
+
 **You own pixel-exact equivalence. The baseline is the spec. You do not touch it.** Equivalence is verified by image diff, not by eye.
 
 1. Establish the baseline first, before any migration: a visual regression harness that screenshots the current component across its states, plus the target when matching two implementations. No baseline, no parity claim. A blocking prerequisite, not a follow-up.

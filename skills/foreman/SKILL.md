@@ -140,6 +140,16 @@ Every playbook ends with a reply written this way, PR link as `https://github.co
 
 Comments follow the same rule as the reply. Write them clean as you go. Keep a comment only for a non-obvious *why* the code can't show. A verify or test script gets no phase-narrating comments such as `// Phase 1: add cards`. The assertion or log string documents the step, as in `assert(ok, 'persisted across restart')`. This applies to every file you produce, including the delegate's diff.
 
+## Project file
+
+At task start, read `<repo>/.claude/foreman.md` if it exists. Its sections are `## Step map`, `## Sizing`, `## Proof`, `## Always pause`, and `## Reproduce`. The template is `references/project-file-template.md`.
+
+- Step map entries override the plugin skill for that step.
+- Always pause adds to the plugin list in Autonomy.
+- Sizing, Proof, and Reproduce feed the recipes.
+
+If the file is absent, use the plugin skills and the plugin defaults, and say so in one line.
+
 ## Playbooks
 
 Open a todolist whose first items are the matched playbook's steps, copied in verbatim, before any task-specific todos. A step you choose not to do stays in the list with a one-line `skip: <reason>`. Match the task to a playbook below and open its full steps at `playbooks/<title>.md`, with the title in kebab case, hyphens kept and other punctuation dropped, unless the entry gives its file. Copy its steps in verbatim.
@@ -147,6 +157,7 @@ Open a todolist whose first items are the matched playbook's steps, copied in ve
 A large or cross-cutting effort (a migration across many call sites, an ambitious multi-part change), or work the user steps away from to trust later, routes to the **figure-it-out** skill even when a narrower playbook like Feature fits. Use **figure-it-out** whenever no bundled playbook fits. It designs a bespoke, rigorous playbook for the task. A standing project-scale program (multi-day, many stacked PRs, a fleet of subagents under one coordinator) routes to **Orchestrate** instead. figure-it-out designs one bespoke run, orchestrate runs the program.
 
 - **Investigation.** Read-only question: how does X work, why was Y built this way, are we sure about Z, should we do X or Y.
+- **User report.** A pasted user complaint ("X is broken"). File: `playbooks/user-report.md`.
 - **Bug fix.** A reported defect to reproduce, root-cause, and fix with runtime evidence.
 - **Perf issue.** A measured slowness to trace and improve against a baseline.
 - **Hillclimb.** Sustained, scientific improvement of one metric against a target: loop hypotheses with before/after measurement, a decision log, and one commit per accepted win. Distinct from Perf issue, which is a one-off fix.
