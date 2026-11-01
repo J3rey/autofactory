@@ -44,9 +44,9 @@ Add `.claude/foreman/` to the project's `.gitignore`.
 - `unslop`: cuts AI tells from writing.
 - `bro`: restates the last message in plain words.
 
-**Recipes** (`skills/foreman/playbooks/`). Feature, Bug fix, Refactoring, Perf issue, Hillclimb, Investigation, User report, Runtime forensics, Trace forensics, Prototype, Visual parity, Eval, Authoring a skill, Babysit, Shipping, Opening a PR, Autonomous run, Orchestrate, Autopilot-full, Multi-phase plan, Session pickup, Pause safely, Worktree cleanup.
+**Recipes** (`skills/foreman/playbooks/`). Feature, Bug fix, Refactoring, Perf issue, Hillclimb, Investigation, User report, Runtime forensics, Trace forensics, Prototype, Visual parity, Eval, Authoring a skill, Opening a PR, Autonomous run, Orchestrate, Autopilot-full, Multi-phase plan, Session pickup, Pause safely, Worktree cleanup.
 
-**References** (`skills/foreman/references/`). The 24 engineering principles foreman cites, the review-bot triage rubric, and the project file template for `<repo>/.claude/foreman.md`.
+**References** (`skills/foreman/references/`). The 24 engineering principles foreman cites and the project file template for `<repo>/.claude/foreman.md`.
 
 **Hooks.** On `UserPromptSubmit`, starting foreman writes `.claude/foreman/run.json`. On `Stop`, a running foreman session is sent back to its task list instead of ending the turn.
 

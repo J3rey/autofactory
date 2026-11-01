@@ -28,6 +28,7 @@ test -f skills/foreman/playbooks/user-report.md && grep -q 'user-report.md' skil
 
 # (f) hook tests (list files: the directory form fails on Node 22)
 node --test hooks/*.test.mjs
+node --test skills/foreman/scripts/check-plan.test.mjs
 
 # (g) no Cursor vocabulary or removed-skill references left in skills, agents or hooks
 if grep -rnE 'AskQuestion\b|generalPurpose|readonly: true|environment: "cloud"|cursor-team-kit|Bugbot|bugbot|\.cursor/|\.mdc\b|setup-pstack|pstack-models|no-comments|comment-sicko|technical-writing|principle-[a-z]|docs/harness|Harness section' skills agents hooks; then

@@ -2,9 +2,11 @@ import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { spawnSync } from "node:child_process";
-import { expect, test } from "bun:test";
+import { fileURLToPath } from "node:url";
+import assert from "node:assert/strict";
+import { test } from "node:test";
 
-const checker = join(import.meta.dir, "check-plan.mjs");
+const checker = join(fileURLToPath(new URL(".", import.meta.url)), "check-plan.mjs");
 const rule =
 	"Tests alone are not sufficient verification. A PR is verified only when its unit, live, and perf boxes are all checked.";
 
@@ -50,13 +52,13 @@ Close.
 Recorded.
 `;
 
-const runPlan = (example: string, expectedExit: number) => {
+const runPlan = (example, expectedExit) => {
 	const directory = mkdtempSync(join(tmpdir(), "check-plan-test-"));
 	const file = join(directory, "plan.md");
 	writeFileSync(file, validPlan + example);
 	try {
 		const result = spawnSync("node", [checker, file], { encoding: "utf8" });
-		expect(result.status).toBe(expectedExit);
+		assert.equal(result.status, expectedExit);
 		return result;
 	} finally {
 		rmSync(directory, { recursive: true, force: true });
@@ -83,16 +85,16 @@ test("keeps mismatched, shorter, and suffixed closers inside the fence", () => {
 test("rejects headings and prose outside a proper close", () => {
 	for (const suffix of ["  ", "\t"]) {
 		const heading = runPlan(`\`\`\`markdown\n## Example only\n\`\`\`${suffix}\n## Example only\n`, 1);
-		expect(heading.stderr).toContain('"## Example only" after Close the program is not an appendix');
+		assert.ok(heading.stderr.includes('"## Example only" after Close the program is not an appendix'));
 	}
 
 	const prose = runPlan("```markdown\nThis prose has a mid-sentence colon: inside code\n```\nThis prose has a mid-sentence colon: bad.\n", 1);
-	expect(prose.stderr).toContain("mid-sentence colon");
+	assert.ok(prose.stderr.includes("mid-sentence colon"));
 });
 
 test("rejects backtick info strings containing a backtick", () => {
 	const result = runPlan("```markdown `invalid`\n## Example only\n```\n", 1);
-	expect(result.stderr).toContain('"## Example only" after Close the program is not an appendix');
+	assert.ok(result.stderr.includes('"## Example only" after Close the program is not an appendix'));
 });
 
 test("ignores prose punctuation inside matching multi-backtick code spans", () => {
@@ -104,7 +106,7 @@ test("ignores prose punctuation inside matching multi-backtick code spans", () =
 
 test("checks prose following a multi-backtick span and unmatched delimiters", () => {
 	const outside = runPlan("Use ``echo `x`: y``. Bad: prose.\n", 1);
-	expect(outside.stderr).toContain("mid-sentence colon");
+	assert.ok(outside.stderr.includes("mid-sentence colon"));
 	const unmatched = runPlan("Use ``unclosed: bad` here.\n", 1);
-	expect(unmatched.stderr).toContain("mid-sentence colon");
+	assert.ok(unmatched.stderr.includes("mid-sentence colon"));
 });

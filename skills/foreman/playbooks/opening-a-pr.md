@@ -10,7 +10,7 @@ Invoked at the end of every other playbook.
 
 **PRs.** Reread the diff and cut slop before commit. Write every PR title, description, and commit body plainly (one word per action, keep articles, a plain verb over `-ing` where one works), then follow the **unslop** skill.
 
-**Titles.** Conventional Commits `type(scope): subject`, no trailing period. Type such as `feat`, `fix`, `docs`, `refactor`, `test`, `chore`, or `perf`. Scope is the area, such as `foreman` or `swarm`. Subject is short, imperative, and names a real symbol when one carries the change, for example `fix(foreman): retarget opening-a-pr babysit trigger`.
+**Titles.** Conventional Commits `type(scope): subject`, no trailing period. Type such as `feat`, `fix`, `docs`, `refactor`, `test`, `chore`, or `perf`. Scope is the area, such as `foreman` or `swarm`. Subject is short, imperative, and names a real symbol when one carries the change, for example `fix(foreman): retarget opening-a-pr stack step`.
 
 **Descriptions.** The PR body is a one-minute briefing, not a lab notebook, for a reviewer who has the diff. It says why the change exists, what it leaves out, what it could break, and how you proved it works. Write short, simple sentences with few identifiers, no walls of text. The body becomes the squash commit body, so keep that commit under about 40 lines. Use `##` headings, not bold lead-ins, in this order, and drop a section with nothing to say:
 
@@ -27,10 +27,8 @@ After the sections, attach videos or screenshots when they prove a claim. Full S
 
 **Built-in PR tool.** When the run provides a built-in PR tool, create, edit, retarget, and mark ready through it, never through a forge CLI. A CLI-made PR misses what the tool tracks. Use `gh` for everything the tool does not cover, and for every PR operation when the run has no such tool.
 
-**Size and stacks.** Prefer five narrow PRs to one large PR. A stack is a base-branch chain. The root PR targets trunk. Each child branch rebases onto its parent's exact tip and its PR targets the parent branch. As a parent merges, move its child onto trunk per `playbooks/shipping.md` step 4. Without a built-in PR tool, create a child with `gh pr create --base <parent-branch>`, and retarget one with `gh pr edit <pr> --base <parent-branch>`. Branch from trunk only for independent work. Rebase on trunk before substantial stack work.
+**Size and stacks.** Prefer five narrow PRs to one large PR. A stack is a base-branch chain. The root PR targets trunk. Each child branch rebases onto its parent's exact tip and its PR targets the parent branch. As a parent merges, retarget its child onto trunk. Without a built-in PR tool, create a child with `gh pr create --base <parent-branch>`, and retarget one with `gh pr edit <pr> --base <parent-branch>`. Branch from trunk only for independent work. Rebase on trunk before substantial stack work.
 
 **Readiness.** Open every PR ready, never as a draft. A built-in PR tool can default to draft, so set `draft: false` on every creation call through it. With `gh`, omit `--draft`. If a PR still opens as a draft, mark it ready through the PR tool, or run `gh pr ready <number>`. Run `gh pr view <number>` before you refer to PR status.
 
-**Babysit.** Opening a PR does not start a babysit. Post the URL and keep building. Finish the phase or stack first. Run a separate babysit pass only when the user asks for one after the whole stack exists. A babysit for each new PR stalls the build and spends checks on commits later waves restart. Push back when feedback drifts from intent.
-
-A subagent that opens a PR rereads its diff and cuts slop first, then posts the URL. It returns to the parent without babysitting, unless it is an Autopilot-full owner. That owner's brief assigns the babysit loop and is the ask `playbooks/babysit.md` waits for. The owner starts the loop after its code-ready report, reports merge-ready, and is exempt from the rules here and in `playbooks/babysit.md` that hold babysitting until a whole stack is built.
+A subagent that opens a PR rereads its diff and cuts slop first, then posts the URL. It returns to the parent, unless it is an Autopilot-full owner. That owner carries its PR through merge per `playbooks/autopilot-full.md`.
