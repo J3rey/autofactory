@@ -1,0 +1,8 @@
+{
+  "name": "autofactory",
+  "owner": { "name": "J3rey" },
+  "description": "An agentic software factory for Claude Code.",
+  "plugins": [
+    { "name": "autofactory", "source": "./" }
+  ]
+}
