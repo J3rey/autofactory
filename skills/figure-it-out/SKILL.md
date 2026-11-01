@@ -1,6 +1,6 @@
 ---
 name: figure-it-out
-description: "Design an auditable playbook when no narrower one fits: a large migration, an ambitious multi-part change, or work a human reviews after stepping away. Scales rigor to the task, runs a hypothesis loop, and logs decisions. Use for /figure-it-out or 'figure it out'."
+description: "Design an auditable playbook when no narrower one fits: a large migration, an ambitious multi-part change, or work a human reviews after stepping away. Scales rigor to the task, runs a hypothesis loop, and logs decisions. Use for /autofactory:figure-it-out or 'figure it out'."
 disable-model-invocation: true
 ---
 
@@ -10,7 +10,7 @@ When the task matches no playbook, design one. The deliverable before any code i
 
 ## Start
 
-Open a todolist whose first item is to read the Principles section of the **foreman** skill. Then add the phases below as todos.
+Use the session's task list tool. Make the first item reading the Principles index in `../foreman/SKILL.md` (the sections are in `../foreman/references/principles.md`). Then add the phases below.
 
 ## Phase A: Frame
 
@@ -27,11 +27,11 @@ Present the framing and tradeoffs before committing to a long run. Reversible wo
 Decompose into atomic, independently-landable units. Sequence riskiest-unknown-first. Scaffold and verification come before features (the **Foundational Thinking** principle).
 
 - Build the verification harness before the work, with the baseline captured from the pre-change state, so the check reads as "old value vs new value".
-- For one-way-door design decisions, run the **architect** skill (it runs **arena**). Skip it for mechanical work whose shape is already concrete. A second arena over a settled design is over-engineering (the **Laziness Protocol** principle).
-- Decide what fans out. Parallelize only across seams, and give each worker its own worktree or branch (the **Separate Before Serializing Shared State** principle). Don't over-fan. Pick each subagent's reasoning level for the job, per the Subagents section of the **foreman** skill.
+- For one-way-door design decisions, read `../architect/SKILL.md` and follow it (it runs arena). Skip it for mechanical work whose shape is already concrete. A second arena over a settled design is over-engineering (the **Laziness Protocol** principle).
+- Decide what fans out. Parallelize only across seams, and give each worker its own worktree or branch (the **Separate Before Serializing Shared State** principle). Don't over-fan. Pick each subagent's reasoning level for the job, per the Subagents section of `../foreman/SKILL.md`.
 - Write the designed phase list down. That list is what the human reviews.
 
-Then execute the design. Add its steps to the todolist as concrete items between the Phase C and Phase D entries. Run each under the Phase C loop discipline, and weave the Phase D log through them, a row as each step lands, rather than saving the whole trail for the end.
+Then execute the design. Add its steps to the task list as concrete items between the Phase C and Phase D entries. Run each under the Phase C loop discipline, and weave the Phase D log through them, a row as each step lands, rather than saving the whole trail for the end.
 
 ## Phase C: Run the loop
 
@@ -43,7 +43,7 @@ Each unit is an experiment. State the hypothesis, make the smallest change, meas
 
 ## Phase D: Keep the audit trail
 
-Log the run via the **show-me-your-work** skill. figure-it-out's work is usually ambitious enough to commit the trail so the reviewer can read it in the PR. The trail plus the diff is what lets the human come back and trust the work.
+Log the run per `../show-me-your-work/SKILL.md`. figure-it-out's work is usually ambitious enough to commit the trail so the reviewer can read it in the PR. The trail plus the diff is what lets the human come back and trust the work.
 
 ## Phase E: Verify and hand back
 

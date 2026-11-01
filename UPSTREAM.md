@@ -6,3 +6,5 @@
 - Date: 2026-11-01
 
 Copied whole, then adapted. Pull updates by diffing against a newer upstream SHA by hand.
+
+Trimmed 2026-11-01 to what foreman uses; see git history for the full import.

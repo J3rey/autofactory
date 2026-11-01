@@ -69,16 +69,11 @@ elif raw=$(gh pr list --author "@me" --state all --limit 1000 \
 fi
 [ -s "$prs" ] || echo "[]" > "$prs"
 
-# Chat transcript dirs for a path, per harness: Cursor, Claude Code, Pi.
-# Codex and OpenCode don't group sessions by project, so they aren't searched.
-slash_slug() { printf '%s' "$1" | sed 's#^/##; s#/#-#g'; }
+# Claude Code chat transcript dir for a path: ~/.claude/projects/<slug>.
 claude_slug() { printf '%s' "$1" | sed 's#[^A-Za-z0-9]#-#g'; }
 transcript_dirs() {
-	for d in "$HOME/.cursor/projects/$(slash_slug "$1")/agent-transcripts" \
-		"$HOME/.claude/projects/$(claude_slug "$1")" \
-		"$HOME/.pi/agent/sessions/--$(slash_slug "$1")--"; do
-		[ -d "$d" ] && printf '%s\n' "$d"
-	done
+	d="$HOME/.claude/projects/$(claude_slug "$1")"
+	[ -d "$d" ] && printf '%s\n' "$d"
 }
 now=$(date +%s)
 
