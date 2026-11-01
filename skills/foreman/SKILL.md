@@ -144,9 +144,11 @@ If the file is absent, use the plugin skills and the plugin defaults, and say so
 
 ## Run state
 
-The keep-going hook reads `.claude/foreman/run.json` to stop the session ending mid-run. Two hooks keep it: a `UserPromptSubmit` hook creates the file when the owner starts foreman (a prompt containing `autofactory:foreman`) and refreshes it on each later owner prompt, and a `Stop` hook reads it. Both find the file by walking up from the session's working directory, so a worktree nested under the checkout still finds it.
+The keep-going hook reads `.claude/foreman/run.json` to stop the session ending mid-run. Your very first action of a run is to make sure `<cwd>/.claude/foreman/run.json` exists with `status: "running"`. If the file is missing, its status is `done`, or it is older than 6 hours, write `{"status": "running", "startedAt": "<ISO>", "updatedAt": "<ISO>", "blocks": 0}` with no `sessionId`, since you don't know your session id. If a fresh `running` or `paused` file exists, leave it.
 
-The file is `{"status": "running", "sessionId": "<id>", "startedAt": "<ISO>", "updatedAt": "<ISO>", "blocks": 0}`. Status is exactly `running`, `paused`, or `done`. The hook creates it. You only change `status`.
+Two hooks keep it: a `UserPromptSubmit` hook writes an owned file when the owner's message starts with `/autofactory:foreman` and refreshes it on each later owner prompt. A `Stop` hook reads it, and hands an unowned `running` file to the first session that stops. Both find the file by walking up from the session's working directory, so a worktree nested under the checkout still finds it.
+
+The file is `{"status": "running", "sessionId": "<id>", "startedAt": "<ISO>", "updatedAt": "<ISO>", "blocks": 0}`. Status is exactly `running`, `paused`, or `done`. The hooks set `sessionId`. You write the file once at the start and after that only change `status`.
 
 - Before calling `AskUserQuestion` on an always-pause question, set `paused`. After the answer, set `running` again and keep going.
 - If the owner interrupts or redirects, set `paused` first.

@@ -94,3 +94,36 @@ test('stale uses updatedAt not startedAt', () => {
   const old = running({ startedAt: '2026-10-31T00:00:00Z', updatedAt: '2026-11-01T11:30:00Z' })
   assert.equal(decide(input(project(old)), now).block, true)
 })
+
+const unowned = (over = {}) => {
+  const { sessionId, ...rest } = running(over)
+  return rest
+}
+
+test('adopts an unowned running run for the stopping session and blocks', () => {
+  const cwd = project(unowned())
+  assert.equal(decide(input(cwd), now).block, true)
+  const state = readState(cwd)
+  assert.equal(state.sessionId, SID)
+  assert.equal(state.blocks, 1)
+})
+
+test('a different session does not block once the run is adopted', () => {
+  const cwd = project(unowned())
+  decide(input(cwd), now)
+  assert.deepEqual(decide(input(cwd, { session_id: 'session-b' }), now), { block: false })
+  assert.equal(readState(cwd).sessionId, SID)
+  assert.equal(readState(cwd).blocks, 1)
+})
+
+test('does not adopt a stale unowned run', () => {
+  const cwd = project(unowned({ updatedAt: '2026-11-01T05:59:00Z' }))
+  assert.deepEqual(decide(input(cwd), now), { block: false })
+  assert.equal(readState(cwd).sessionId, undefined)
+})
+
+test('does not adopt an unowned paused run', () => {
+  const cwd = project(unowned({ status: 'paused' }))
+  assert.deepEqual(decide(input(cwd), now), { block: false })
+  assert.equal(readState(cwd).sessionId, undefined)
+})

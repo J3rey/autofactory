@@ -24,12 +24,15 @@ export function decide(input, now) {
     const file = findRunFile(input.cwd)
     if (!file) return ALLOW
     const state = JSON.parse(fs.readFileSync(file, 'utf8'))
-    if (state.sessionId !== input.session_id || state.status !== 'running') return ALLOW
+    if (state.status !== 'running') return ALLOW
+    // shortcut: the first session to stop in this checkout adopts an unowned run; two foreman runs in one checkout can mis-adopt. Upgrade to per-session run files if that bites.
+    const unowned = typeof state.sessionId !== 'string' || state.sessionId === ''
+    if (unowned ? typeof input.session_id !== 'string' : state.sessionId !== input.session_id) return ALLOW
     const updated = Date.parse(state.updatedAt)
     if (!Number.isFinite(updated) || now.getTime() - updated > STALE_MS) return ALLOW
     const blocks = Number.isInteger(state.blocks) ? state.blocks : 0
     if (blocks >= MAX_BLOCKS) return ALLOW
-    fs.writeFileSync(file, JSON.stringify({ ...state, blocks: blocks + 1 }, null, 2))
+    fs.writeFileSync(file, JSON.stringify({ ...state, sessionId: input.session_id, blocks: blocks + 1 }, null, 2))
     return { block: true, reason: REASON }
   } catch {
     return ALLOW
