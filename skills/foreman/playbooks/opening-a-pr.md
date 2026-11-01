@@ -2,6 +2,8 @@
 
 Invoked at the end of every other playbook.
 
+**Project override.** If the project file's Step map has `land`, branch from the project's integration branch, write the body with the `PR body` entry, and hand off to `land` instead of the rest of this playbook.
+
 **Worktree.** Work from a git worktree off main. Subagents inherit it. Multiple `Task` calls on the same branch each get their own worktree, or `git fetch && git reset --hard origin/<branch>` between them. Dirty branch with unrelated work: patch out, fresh worktree, apply. Snarled worktree: reset from main, redo minimally.
 
 **Commits.** Commit liberally. Rebase into small, ordered commits before opening PRs. Each commit is a future PR: landable, ordered to tell the story. Amend when the fix belongs in a just-made commit. New commit when separable. Commit bodies don't restate the subject.

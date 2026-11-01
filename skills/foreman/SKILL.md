@@ -81,7 +81,7 @@ Read the leaf skill in full for any principle you apply. Each entry names when i
 
 ## Autonomy
 
-**Just do it.** Reversible work proceeds. Decide with the recommended approach, fix the bugs you find along the way, and log each choice via the **show-me-your-work** skill. Use any MCP tool. External actions that can be undone (team chat, ticket updates, kicking off evals) proceed without asking.
+**Just do it.** Reversible work proceeds. Decide with the recommended approach, fix the bugs you find along the way, and log each choice via the **show-me-your-work** skill. Use any MCP tool. External actions that can be undone (team chat, ticket updates, kicking off $0 evals) proceed without asking. Paid evals pause. "Reversible" never covers an always-pause item below: those pause even when they could be undone.
 
 **Always pause** for these, and for anything the project adds in `.claude/foreman.md`:
 
@@ -94,7 +94,7 @@ Read the leaf skill in full for any principle you apply. Each entry names when i
 - Product decisions users would notice.
 - Adding a dependency.
 
-To pause, ask one plain-English question with the recommended answer first via `AskUserQuestion`, then end the turn. Park the work. Waiting is never permission to pick a default.
+To pause, set the run state to `paused` (see Run state), then ask one plain-English question with the recommended answer first via `AskUserQuestion`, which waits inside the turn. After the answer, set the state back to `running`. If the tool is unavailable, ask in chat and end the turn. Park the work. Waiting is never permission to pick a default.
 
 **No is an acceptable answer.** Asked whether to do something, invited to add scope, or shown an approach, reply with your real judgment. Decline, push back, or say "this doesn't earn its place" when true. A recommendation is a judgment, not a validation. Agreement is not the default, candor over sycophancy.
 
@@ -147,21 +147,21 @@ At task start, read `<repo>/.claude/foreman.md` if it exists. Its sections are `
 - Step map entries override the plugin skill for that step.
 - Always pause adds to the plugin list in Autonomy.
 - Sizing, Proof, and Reproduce feed the recipes.
+- When the Step map has `land` or `PR body`, every playbook's closing "Opening a PR" step uses them: branch from the project's integration branch, write the body with the `PR body` entry, and hand off to `land`.
 
 If the file is absent, use the plugin skills and the plugin defaults, and say so in one line.
 
 ## Run state
 
-The keep-going hook reads `.claude/foreman/run.json` to stop the session ending mid-run. The path is relative to the session's current working directory. The hook reads it from the cwd Claude Code passes it, so a file written anywhere else is silently ignored.
+The keep-going hook reads `.claude/foreman/run.json` to stop the session ending mid-run. Two hooks keep it: a `UserPromptSubmit` hook creates the file when the owner starts foreman (a prompt containing `autofactory:foreman`) and refreshes it on each later owner prompt, and a `Stop` hook reads it. Both find the file by walking up from the session's working directory, so a worktree nested under the checkout still finds it.
 
-The file is `{"status": "running", "startedAt": "<ISO timestamp>", "blocks": 0}`. Status is exactly `running`, `paused`, or `done`.
+The file is `{"status": "running", "sessionId": "<id>", "startedAt": "<ISO>", "updatedAt": "<ISO>", "blocks": 0}`. Status is exactly `running`, `paused`, or `done`. The hook creates it. You only change `status`.
 
-- At the start of a run, write it with `running` and `blocks` 0.
-- Before ending a turn on an always-pause question, set `paused`.
-- At the final reply, set `done`.
-- On resume after an answer, set `running` again and keep going.
+- Before calling `AskUserQuestion` on an always-pause question, set `paused`. After the answer, set `running` again and keep going.
+- If the owner interrupts or redirects, set `paused` first.
+- At the final reply, set `done`. On a user report you can't reproduce, set `done` too.
 
-While the status is `running`, the hook blocks a stop and sends you back to the task list. It lets the session stop after 25 consecutive blocks or 6 hours, so a stuck run can't trap it.
+While the status is `running`, the hook blocks a stop from the owning session and sends you back to the task list. It never blocks another session. It releases the session after 25 consecutive blocks (each owner prompt resets the count) or after 6 hours without owner activity, so a stuck run can't trap it.
 
 ## Playbooks
 
