@@ -26,4 +26,7 @@ fi
 # (e) the user-report recipe exists and is registered
 test -f skills/foreman/playbooks/user-report.md && grep -q 'user-report.md' skills/foreman/SKILL.md
 
+# (f) hook tests (list files: the directory form fails on Node 22)
+node --test hooks/*.test.mjs
+
 echo "check: ok"

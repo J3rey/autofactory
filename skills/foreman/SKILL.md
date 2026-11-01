@@ -150,6 +150,19 @@ At task start, read `<repo>/.claude/foreman.md` if it exists. Its sections are `
 
 If the file is absent, use the plugin skills and the plugin defaults, and say so in one line.
 
+## Run state
+
+The keep-going hook reads `.claude/foreman/run.json` to stop the session ending mid-run. The path is relative to the session's current working directory. The hook reads it from the cwd Claude Code passes it, so a file written anywhere else is silently ignored.
+
+The file is `{"status": "running", "startedAt": "<ISO timestamp>", "blocks": 0}`. Status is exactly `running`, `paused`, or `done`.
+
+- At the start of a run, write it with `running` and `blocks` 0.
+- Before ending a turn on an always-pause question, set `paused`.
+- At the final reply, set `done`.
+- On resume after an answer, set `running` again and keep going.
+
+While the status is `running`, the hook blocks a stop and sends you back to the task list. It lets the session stop after 25 consecutive blocks or 6 hours, so a stuck run can't trap it.
+
 ## Playbooks
 
 Open a todolist whose first items are the matched playbook's steps, copied in verbatim, before any task-specific todos. A step you choose not to do stays in the list with a one-line `skip: <reason>`. Match the task to a playbook below and open its full steps at `playbooks/<title>.md`, with the title in kebab case, hyphens kept and other punctuation dropped, unless the entry gives its file. Copy its steps in verbatim.

@@ -43,3 +43,9 @@ Where a repro may run and what it may read. Anything outside this list pauses fi
 
 - Run: the local dev server with a seeded test account.
 - Read: local files and the dev database. Never production data.
+
+**Gitignore.** Foreman keeps per-run state in `.claude/foreman/`. Add this line to the project's `.gitignore`:
+
+```
+.claude/foreman/
+```
