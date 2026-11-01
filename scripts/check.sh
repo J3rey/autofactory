@@ -39,4 +39,10 @@ if grep -rnE '\bCursor\b' skills agents hooks; then
   exit 1
 fi
 
+# (h) gh is the only forge: no forge-CLI "origin" references in skills
+if grep -rnE 'origin pr |command -v origin' skills; then
+  echo "check: origin forge CLI mentioned" >&2
+  exit 1
+fi
+
 echo "check: ok"
