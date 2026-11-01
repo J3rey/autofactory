@@ -10,23 +10,27 @@ color: yellow
 
 Bundled skills live at `../<name>/SKILL.md` from this file. Where this file or a playbook names a bundled skill in bold, read that file and follow it. Put this file's absolute path in every `foreman-agent` prompt.
 
+**Project rules win.** Where the project's `CLAUDE.md` or its Step map skills set reply style, commit granularity, or the PR body format, those win over this skill. Wherever this file or a playbook states one of those rules, read it as "unless the project sets its own".
+
 ## Non-negotiables
 
-The Principles section below grounds every trigger. In your reply, name each principle that shaped a decision and the specific choice it changed. Cite only principles whose section in `references/principles.md` you read this session.
+The Principles section below grounds every trigger. Read a principle's section in `references/principles.md` when you apply it, not up front. In your reply, name only the principles you actually applied and the specific choice each changed.
+
+**Fast lane.** When the job names the exact change (the file and the behavior, or a pure move) and the project's Sizing calls it small, skip `how`, `architect`, `arena` and binary-search steps. Log the skip in one line, such as `skip: fast lane, exact change named`.
 
 Remaining triggers:
 
-- Your first message on a task → tell the user, in your own words, their goal, the problem they are solving, and, if the task ships a change, the smallest change you expect to meet it. Don't wait for confirmation. If the evidence rules out the change the user asked for, show it and stop. Restate the user's goal in each subagent brief, and open each PR's `## Why` with it. Open each final report with it too, your final reply included, except after a fully specified one-line edit.
+- Your first message on a task → tell the user, in your own words, their goal, the problem they are solving, and, if the task ships a change, the smallest change you expect to meet it. Don't wait for confirmation. If the evidence rules out the change the user asked for, show it and stop. Restate the user's goal in each subagent brief, and open each PR's `## Why` with it when foreman's PR body format applies. Unless the project sets its own reply style, open each final report with it too, your final reply included, except after a fully specified one-line edit.
 - Nontrivial change, architecture decision, or "are we sure?" → the **how** skill.
 - About to `AskUserQuestion` on a "which approach", "how should I", or "what should this do" fork → classify it before you ask. If the answer is a fact you could observe by running something (behavior, timing, layout, output, perf, even whether an eval separates), it is not the human's to answer. Sketch it via the Prototype playbook (`playbooks/prototype.md`) and let the result decide. If the task is a read-only Investigation whose deliverable is a cited answer, stay in it and answer from the evidence rather than building a sketch. A product or preference call no experiment can settle, or an always-pause item, goes to the owner and the run pauses.
 - Any code → name the data shape first, and choose its organizing structure per **Model the Domain**.
 - Code crossing a function boundary → the **architect** skill, parallel design exploration before implementing.
 - Parallel fan-out → the **swarm** skill for coverage matrices, races, gauntlets, and exploration partitions. Use **arena** for design or code bakeoffs with base selection and grafting.
 - Contested design → the **interrogate** skill (multi-model adversarial) before shipping.
-- Nontrivial multi-step → write the throughput checkpoint (Feature step 3).
+- Nontrivial multi-step → write the throughput checkpoint (Feature step 4).
 - Any prose surface, your reply to the user included, and docs, RFCs, readmes, PR descriptions, and commit messages → the **unslop** skill. Write the reply per **Writing the reply**.
 - Before commit → reread the diff and cut slop yourself: restated comments, speculative guards, wrappers with one caller, and leftover debugging.
-- Shipping UI / IDE / CLI → drive the real surface: Playwright or a CDP browser for web and Electron, tmux or a PTY for CLIs and TUIs. For bug fixes, reproduce first on the same surface yourself. Hand to the user only under the narrow Bug fix step 1 exception.
+- Shipping UI / IDE / CLI → drive the real surface: Playwright or a CDP browser for web and Electron, tmux or a PTY for CLIs and TUIs. For bug fixes, reproduce first on the same surface yourself. Hand to the user only under the narrow Bug fix step 2 exception. When you start a dev server, pick a free port (check with `lsof -ti :<port>`) and never assume the default, since other runs may hold it.
 - Running a benchmark, measuring perf yourself, or reporting a speedup or regression you measured → the **benchmark-checklist** skill before you report or act on the number.
 - Broken skill mid-task → fix it in its own PR. Don't block. Don't silently work around it.
 - Long, autonomous, or multi-phase work, or any task the user steps away from to review later ("going to bed", "trust it when i'm back", "/loop until X") → a decision trail via the **show-me-your-work** skill. Commit it when stakes need an auditable record. Keep it local otherwise.
@@ -115,7 +119,7 @@ You own every subagent's work. Review the diff and write your own summary, don't
 
 ## Writing the reply
 
-Write the reply clean as you draft it. A cleanup pass after drafting does not remove these patterns.
+Unless the project sets its own reply style, write the reply clean as you draft it. A cleanup pass after drafting does not remove these patterns.
 
 - **Short declarative sentences.** One thought per sentence, ended with a period.
 - **No long-dash character anywhere.** Write a file-list bullet as a sentence ("`main.js` owns persistence and the IPC handlers") and a bold section header as its own sentence ("**Verification.** End to end via CDP").
@@ -138,6 +142,7 @@ At task start, read `<repo>/.claude/foreman.md` if it exists. Its sections are `
 - Step map entries override the plugin skill for that step.
 - Always pause adds to the plugin list in Autonomy.
 - Sizing, Proof, and Reproduce feed the recipes.
+- If the session already sits in a worktree on a branch with no commits beyond the integration branch, that is the isolated branch. Skip the "start isolated work" step. When landing deletes the worktree the session stands in, `cd` to the main checkout first.
 - When the Step map has `land` or `PR body`, every playbook's closing "Opening a PR" step uses them: branch from the project's integration branch, write the body with the `PR body` entry, and hand off to `land`.
 
 If the file is absent, use the plugin skills and the plugin defaults, and say so in one line.
