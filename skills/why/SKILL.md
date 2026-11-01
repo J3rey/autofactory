@@ -8,7 +8,7 @@ disable-model-invocation: true
 
 Investigate the motivation and intent behind code. The companion `how` skill answers what the code does and how it works. `why` answers what forces led to its shape.
 
-Each spawn below names a role line in the pstack settings file (`~/.cursor/rules/pstack-models.mdc` in Cursor, `~/.claude/rules/pstack-models.md` in Claude Code, `~/.agents/pstack-models.md` in other harnesses) and a default. Set `model` to that line's value, or to the default if the file or the line is missing. Leave `model` unset when the value is `auto` or `inherit-parent`. If your subagent tool rejects the model or effort, use the default and say so. If it rejects the default, use the closest valid model from its error message or your harness's model list. Pick each subagent's reasoning level for the job, per the Subagents section of the **foreman** skill.
+Investigators run `model: "sonnet"`, `effort: "high"`. The synthesizer runs `model: "opus"`, `effort: "xhigh"`. Pick each subagent's reasoning level for the job, per the Subagents section of the **foreman** skill.
 
 Every spawn is `generalPurpose` with `readonly: false` (agent mode). **Do not use readonly/Ask mode.** It strips MCP access, which disables the MCP-backed investigators and the synthesizer's citation spot-checks. Investigators still shouldn't write anything.
 
