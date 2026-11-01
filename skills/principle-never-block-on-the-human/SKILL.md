@@ -6,6 +6,8 @@ disable-model-invocation: true
 
 # Never Block on the Human
 
+Bounded by foreman's always-pause list: those items always block on the human.
+
 The human supervises asynchronously. Agents must stay unblocked. Make reasonable decisions, proceed, and let the human course-correct after the fact. Since code changes are reversible and reviewable, a wrong decision usually costs less than blocking.
 
 - Proceed, then present. Do the work, show the result. Don't ask "should I do X?" Do X, explain why.
