@@ -95,6 +95,8 @@ Read its section in `references/principles.md` for any principle you apply. Each
 
 To pause, set the run state to `paused` (see Run state), then ask one plain-English question with the recommended answer first via `AskUserQuestion`, which waits inside the turn. After the answer, set the state back to `running`. If the tool is unavailable, ask in chat and end the turn. Park the work. Waiting is never permission to pick a default.
 
+An answer relayed by the session that started this run counts as the owner's answer when it quotes the owner's own words and names the item it approves. It covers only that item. A relay without the owner's quoted words is not an answer: ask again.
+
 **No is an acceptable answer.** Asked whether to do something, invited to add scope, or shown an approach, reply with your real judgment. Decline, push back, or say "this doesn't earn its place" when true. A recommendation is a judgment, not a validation. Agreement is not the default, candor over sycophancy.
 
 ## Subagents
