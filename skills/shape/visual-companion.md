@@ -39,8 +39,8 @@ bash <skill-dir>/scripts/start-server.sh --project-dir /path/to/project --open
 
 # Returns: {"type":"server-started","port":52341,
 #           "url":"http://localhost:52341/?key=ab12…",
-#           "screen_dir":"/path/to/project/.superpowers/brainstorm/12345-1706000000/content",
-#           "state_dir":"/path/to/project/.superpowers/brainstorm/12345-1706000000/state"}
+#           "screen_dir":"/path/to/project/.autofactory/shape/12345-1706000000/content",
+#           "state_dir":"/path/to/project/.autofactory/shape/12345-1706000000/state"}
 ```
 
 `<skill-dir>` is the directory holding this file (the skill's base directory). Every `scripts/...` path below is relative to it, so use the absolute path.
@@ -55,9 +55,9 @@ the network can't read the screens or inject events. After the first load the
 browser remembers the key via a cookie, so reloads and `/files/*` assets work
 without repeating it.
 
-**Finding connection info:** The server writes its startup JSON to `$STATE_DIR/server-info`. If you launched the server in the background and didn't capture stdout, read that file to get the URL and port. When using `--project-dir`, check `<project>/.superpowers/brainstorm/` for the session directory.
+**Finding connection info:** The server writes its startup JSON to `$STATE_DIR/server-info`. If you launched the server in the background and didn't capture stdout, read that file to get the URL and port. When using `--project-dir`, check `<project>/.autofactory/shape/` for the session directory.
 
-**Note:** Pass the project root as `--project-dir` so mockups persist in `.superpowers/brainstorm/` and survive server restarts. Without it, files go to `/tmp` and get cleaned up. Remind the user to add `.superpowers/` to `.gitignore` if it's not already there.
+**Note:** Pass the project root as `--project-dir` so mockups persist in `.autofactory/shape/` and survive server restarts. Without it, files go to `/tmp` and get cleaned up. Remind the user to add `.autofactory/` to `.gitignore` if it's not already there.
 
 **Launching the server:**
 
@@ -269,7 +269,7 @@ If `$STATE_DIR/events` doesn't exist, the user didn't interact with the browser 
 bash <skill-dir>/scripts/stop-server.sh $SESSION_DIR
 ```
 
-If the session used `--project-dir`, mockup files persist in `.superpowers/brainstorm/` for later reference. Only `/tmp` sessions get deleted on stop.
+If the session used `--project-dir`, mockup files persist in `.autofactory/shape/` for later reference. Only `/tmp` sessions get deleted on stop.
 
 ## Reference
 

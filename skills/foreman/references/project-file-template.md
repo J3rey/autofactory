@@ -8,6 +8,7 @@ Foreman step to the project skill that does it. An entry here overrides the plug
 
 | Foreman step | Project skill |
 |---|---|
+| Shape | `grill-me` |
 | start isolated work | `new-worktree-branch` |
 | code review | `code-review` |
 | break-it check | `adversarial-verification` |
