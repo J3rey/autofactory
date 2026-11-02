@@ -50,6 +50,8 @@ Add `.claude/foreman/` to the project's `.gitignore`.
 
 **Hooks.** On `UserPromptSubmit`, starting foreman writes `.claude/foreman/run.json`. On `Stop`, a running foreman session is sent back to its task list instead of ending the turn.
 
+**Progress band.** In the Claude desktop app and terminal, a band above the prompt shows a running foreman job: running, paused or done, the skill in use, and a progress bar over the recipe's steps. Hide it with its button; `/foreman-progress` brings it back.
+
 **Agent.** `autofactory:foreman-agent` is the delegate foreman spawns for code-writing work.
 
 ## Credit

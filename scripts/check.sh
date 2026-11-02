@@ -46,4 +46,5 @@ if grep -rnE 'origin pr |command -v origin' skills; then
   exit 1
 fi
 
+claude plugin test . >/dev/null
 echo "check: ok"
