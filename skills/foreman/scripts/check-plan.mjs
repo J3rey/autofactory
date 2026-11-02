@@ -7,6 +7,7 @@ const RULE =
 const LANES = /Ten lanes on `[^`<>]+` at the PR head/;
 const SUB_BLOCKS = [
 	"Depends on.",
+	"Interfaces.",
 	"Files.",
 	"Build.",
 	"You see.",
@@ -25,6 +26,7 @@ const HOW_TO_READ_MARKERS = [
 	"playbooks/",
 	RULE,
 ];
+const INTERFACE_ITEMS = ["Consumes.", "Produces."];
 const PERF_ITEMS = ["Metric.", "Probe.", "Baseline.", "Rule."];
 const BOX = /^\s*- \[[ x]\] (.*)$/;
 
@@ -103,6 +105,14 @@ if (h1 !== -1 && howToRead) {
 	}
 }
 
+const constraints = find("Global constraints");
+const programAt = sections.findIndex((s) => s.title === "Program checklist");
+if (!constraints) fail(1, 'no "## Global constraints" section');
+else {
+	if (programAt !== -1 && sections.indexOf(constraints) > programAt) fail(constraints.n, "Global constraints comes after Program checklist");
+	if (!constraints.body.some((l) => !l.code && /^\s*- \S/.test(l.text))) fail(constraints.n, "Global constraints lists no constraint");
+}
+
 const program = find("Program checklist");
 if (!program) fail(1, 'no "## Program checklist" section');
 else {
@@ -144,6 +154,16 @@ for (const pr of prSections) {
 
 	const depends = block("Depends on.");
 	if (depends && depends.rest === "") fail(depends.n, `${pr.title}: Depends on names nothing`);
+	const interfaces = block("Interfaces.");
+	if (interfaces) {
+		const items = interfaces.lines
+			.filter((l) => !l.code && /^\s*- \S/.test(l.text))
+			.map((l) => ({ n: l.n, name: l.text.replace(/^\s*- /, "").split(" ")[0], text: l.text.replace(/^\s*- \S+\s*/, "") }));
+		if (items.map((i) => i.name).join("|") !== INTERFACE_ITEMS.join("|")) {
+			fail(interfaces.n, `${pr.title}: Interfaces items are [${items.map((i) => i.name).join(", ")}], expected [${INTERFACE_ITEMS.join(", ")}]`);
+		}
+		for (const item of items) if (item.text.trim() === "") fail(item.n, `${pr.title}: Interfaces ${item.name} names nothing`);
+	}
 	for (const name of ["Files.", "Build.", "You see.", "Verify, unit.", "Merge."]) {
 		const b = block(name);
 		if (b && boxes(b.lines).length === 0) fail(b.n, `${pr.title}: ${name} has no box`);
@@ -187,7 +207,7 @@ for (const pr of prSections) {
 	}
 
 	const total = boxes(pr.body).length;
-	const cells = SUB_BLOCKS.filter((s) => s !== "Depends on.").map((s) => `${s.replace(/[ ,.]+/g, "-").replace(/-$/, "").toLowerCase()}=${counts[s] ?? 0}`);
+	const cells = SUB_BLOCKS.filter((s) => s !== "Depends on." && s !== "Interfaces.").map((s) => `${s.replace(/[ ,.]+/g, "-").replace(/-$/, "").toLowerCase()}=${counts[s] ?? 0}`);
 	report.push(`${pr.title}  boxes=${total}  ${cells.join(" ")}`);
 }
 

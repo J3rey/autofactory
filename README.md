@@ -30,7 +30,7 @@ Add `.claude/foreman/` to the project's `.gitignore`.
 
 **Skills.** Start with `foreman`. It reads the others as a run needs them. Each can also be run directly as `/autofactory:<name>`.
 
-- `foreman`: matches the job to a recipe, runs it to done, pauses only for big decisions.
+- `foreman`: matches the job to a recipe, runs it to done, pauses only for big decisions. Multi-task builds run a task loop: an implementer per task, a task review after each, a capped fix loop, a resume ledger.
 - `how`: explains how a subsystem works before you change it.
 - `why`: finds the reasons behind code, from git history, tickets, docs, chat, and incident data.
 - `shape`: shapes a fuzzy feature ask into an agreed spec, one question at a time; adapted from superpowers brainstorming.
@@ -59,4 +59,4 @@ Add `.claude/foreman/` to the project's `.gitignore`.
 
 Built on [pstack](https://github.com/backnotprop/pstack) by Lauren Tan (poteto), mirrored from [cursor/plugins](https://github.com/cursor/plugins/tree/main/pstack). Copied at upstream commit `25abb38559ddbabec563646224d09eff9a250eca` (2026-11-01), then trimmed to what foreman uses and rewritten for Claude Code. To pull later upstream changes, diff against a newer upstream commit by hand. MIT licensed; see `LICENSE`.
 
-The `shape` skill is adapted from the brainstorming skill in [superpowers](https://github.com/obra/superpowers) by Jesse Vincent. MIT licensed, Copyright (c) 2025 Jesse Vincent; the notice ships in `skills/shape/LICENSE`.
+The `shape` skill and foreman's task loop are adapted from the brainstorming and subagent-driven-development skills in [superpowers](https://github.com/obra/superpowers) by Jesse Vincent. MIT licensed, Copyright (c) 2025 Jesse Vincent; the notice ships in `skills/shape/LICENSE` and `skills/foreman/references/task-loop/LICENSE`.

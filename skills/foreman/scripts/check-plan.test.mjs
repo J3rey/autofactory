@@ -16,6 +16,9 @@ const validPlan = `# Demo
 One box is one unit of work and names the evidence. Check a box only when its evidence exists. See playbooks/.
 ${rule}
 
+## Global constraints
+- Every response is under 200 ms.
+
 ## Program checklist
 ### Arm the program
 ### Spawn owners
@@ -26,6 +29,9 @@ ${rule}
 
 ## PR 1
 **Depends on.** None.
+**Interfaces.**
+- Consumes. Nothing.
+- Produces. Nothing.
 **Files.**
 - [ ] Do the thing.
 **Build.**
@@ -109,4 +115,39 @@ test("checks prose following a multi-backtick span and unmatched delimiters", ()
 	assert.ok(outside.stderr.includes("mid-sentence colon"));
 	const unmatched = runPlan("Use ``unclosed: bad` here.\n", 1);
 	assert.ok(unmatched.stderr.includes("mid-sentence colon"));
+});
+
+const withoutText = (text) => {
+	const directory = mkdtempSync(join(tmpdir(), "check-plan-test-"));
+	const file = join(directory, "plan.md");
+	writeFileSync(file, validPlan.replace(text, ""));
+	try {
+		return spawnSync("node", [checker, file], { encoding: "utf8" });
+	} finally {
+		rmSync(directory, { recursive: true, force: true });
+	}
+};
+
+test("accepts the valid plan with Global constraints and Interfaces", () => {
+	runPlan("", 0);
+});
+
+test("requires a Global constraints section with a constraint", () => {
+	const missing = withoutText("## Global constraints\n- Every response is under 200 ms.\n\n");
+	assert.equal(missing.status, 1);
+	assert.ok(missing.stderr.includes('no "## Global constraints" section'));
+	const empty = withoutText("- Every response is under 200 ms.\n");
+	assert.equal(empty.status, 1);
+	assert.ok(empty.stderr.includes("Global constraints lists no constraint"));
+});
+
+test("requires Interfaces with Consumes and Produces in each PR", () => {
+	const missing = withoutText("**Interfaces.**\n- Consumes. Nothing.\n- Produces. Nothing.\n");
+	assert.equal(missing.status, 1);
+	assert.ok(missing.stderr.includes("sub-blocks are"));
+	const noProduces = withoutText("- Produces. Nothing.\n");
+	assert.equal(noProduces.status, 1);
+	assert.ok(noProduces.stderr.includes("Interfaces items are [Consumes.]"));
+	const blank = withoutText("- Consumes. Nothing.\n- Produces. Nothing.\n").stderr;
+	assert.ok(blank.includes("Interfaces items are []"));
 });

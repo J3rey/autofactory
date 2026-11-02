@@ -5,7 +5,7 @@
 1. When the change is one or two files with an obvious approach, skip the plan. Say so and stop.
 2. Settle open questions by prototype before you write. Run `playbooks/prototype.md` for each. Keep the branch, the SHA, and the screenshots for Appendix A. Ask the operator only about a product or preference call that no run can settle. Give options (the **Never Block on the Human** principle).
 3. Explore in subagents with `subagent_type: "foreman-agent"` and an explicit model per the Subagents section (the **Guard the Context Window** principle). Pick each subagent's reasoning level for the job, per the Subagents section. Each returns file pointers, conventions, test commands, and entry points. No inlined dumps.
-4. Copy the skeleton below into the plan file and fill every placeholder. Unless the operator names a path, write the file under `docs/` in the repo. Keep every heading and every sub-block in the order shown. One section per PR. One PR is one change with its own evidence (the **Sequence Work into Verifiable Units** principle). Name the execution playbook in **How to read this**. A standing program takes `playbooks/orchestrate.md`.
+4. Copy the skeleton below into the plan file and fill every placeholder. Unless the operator names a path, write the file under `docs/` in the repo. Keep every heading and every sub-block in the order shown. Global constraints holds the binding requirements every PR must meet, as exact values and relationships. Each PR's Interfaces block names what it consumes and produces so a later owner and its reviewer need not read the earlier PRs. One section per PR. One PR is one change with its own evidence (the **Sequence Work into Verifiable Units** principle). Name the execution playbook in **How to read this**. A standing program takes `playbooks/orchestrate.md`.
 5. Write it, then follow the **unslop** skill. The body is one Diátaxis mode, how-to. Appendices hold explanation and reference. Each heading states the task or the finding. No long dashes. No mid-sentence colons.
 6. Run `node ../scripts/check-plan.mjs <plan.md>` (path relative to this file) and fix every line it prints (the **Encode Lessons in Structure** principle).
 7. Hand back. Post the plan path and the script's output, then stop. Execution starts on the operator's explicit go, under the execution playbook the plan names.
@@ -27,6 +27,10 @@ The program runs the autofactory plugin's `skills/foreman/playbooks/<execution p
 
 Tests alone are not sufficient verification. A PR is verified only when its unit, live, and perf boxes are all checked.
 
+## Global constraints
+
+- <A binding requirement every PR must meet, with the exact value, format, or relationship. One bullet each.>
+
 ## Program checklist
 
 ### Arm the program
@@ -44,7 +48,7 @@ Tests alone are not sufficient verification. A PR is verified only when its unit
 
 ### Spawn owners
 
-- [ ] Spawn one owner per PR with the full lifecycle the execution playbook names.
+- [ ] Spawn one owner per PR with the full lifecycle the execution playbook names. Each owner builds its PR through the task loop in the plugin's `skills/foreman/references/task-loop/README.md`, one task at a time, each with a task review and the plan's Global constraints handed to the reviewer.
 - [ ] Follow this dependency graph. Start dependent work only after its parent merges, or base it on the parent branch when the execution playbook stacks.
   - [ ] <PR id> and <PR id> are independent and first. Both branch from `main`.
   - [ ] <PR id> after <PR id>.
@@ -77,6 +81,11 @@ Each live lane runs in its own worktree (`isolation: "worktree"`) at the PR head
 ## <Task as a verb phrase> (<PR id>)
 
 **Depends on.** <PR id, or None.>
+
+**Interfaces.**
+
+- Consumes. <The symbols, schemas, or contracts this PR reads from earlier PRs or existing code, with their exact signatures. None if it reads no other PR's output.>
+- Produces. <The symbols, schemas, or contracts later PRs rely on, with their exact signatures. None if nothing builds on it.>
 
 **Files.**
 
