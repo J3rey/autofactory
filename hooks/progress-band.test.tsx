@@ -26,14 +26,14 @@ test('band shows skill and progress after a foreman run starts', async ($, on) =
     { content: 'Plan', status: 'completed' },
     { content: 'Build', status: 'in_progress' },
   ] })
-  await $.skill.prompt({ skill: 'verify-loopy', text: '', frontmatter: {}, source: 'projectSettings' })
+  await $.skill.prompt({ skill: 'review-diff', text: '', frontmatter: {}, source: 'projectSettings' })
 
   for (const surface of ['terminal', 'desktop'] as const) {
     const ui = await $.ui.mount({
       plugin: 'autofactory', surface, component: 'AbovePrompt',
       props: { hasSurvey: false, isWorking: true, maxRows: 10, bodyColumns: 80, scroll: { offset: 0, bodyRows: 10 }, view: {} },
     })
-    expect((await ui.find({ type: 'Text', text: /verify-loopy/ }))?.text).toContain('verify-loopy')
+    expect((await ui.find({ type: 'Text', text: /review-diff/ }))?.text).toContain('review-diff')
     expect((await ui.find({ type: 'Text', text: /1\/2/ }))?.text).toContain('1/2')
     await ui.unmount()
   }

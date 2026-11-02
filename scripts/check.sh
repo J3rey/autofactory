@@ -6,7 +6,8 @@ cd "$(dirname "$0")/.."
 claude plugin validate .
 
 # (b) nothing project-specific leaks into the plugin (this script is excluded so its own pattern doesn't match)
-if grep -rniE 'loopy|betteryourads|lucentwooo|pnwnorqczyzqsxklaqbh|tryloopy' --exclude-dir=.git --exclude=check.sh .; then
+# only files git would push (tracked or untracked-not-ignored); engine-written .claude-plugin/types/ is gitignored
+if git ls-files -co --exclude-standard -z | grep -zv '^scripts/check.sh$' | xargs -0 grep -niE 'loopy|betteryourads|lucentwooo|pnwnorqczyzqsxklaqbh|tryloopy'; then
   echo "check: leak found" >&2
   exit 1
 fi
