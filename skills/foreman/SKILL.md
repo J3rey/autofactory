@@ -16,7 +16,7 @@ Bundled skills live at `../<name>/SKILL.md` from this file. Where this file or a
 
 The Principles section below grounds every trigger. Read a principle's section in `references/principles.md` when you apply it, not up front. In your reply, name only the principles you actually applied and the specific choice each changed.
 
-**Fast lane.** When the job names the exact change (the file and the behavior, or a pure move) and the project's Sizing calls it small, skip `how`, `architect`, `arena` and binary-search steps. Log the skip in one line, such as `skip: fast lane, exact change named`.
+**Fast lane.** When the job names the exact change (the file and the behavior, or a pure move) and the project's Sizing calls it small, skip `how`, `architect` and binary-search steps. Log the skip in one line, such as `skip: fast lane, exact change named`.
 
 Remaining triggers:
 
@@ -24,9 +24,8 @@ Remaining triggers:
 - Nontrivial change, architecture decision, or "are we sure?" → the **how** skill.
 - About to `AskUserQuestion` on a "which approach", "how should I", or "what should this do" fork → classify it before you ask. If the answer is a fact you could observe by running something (behavior, timing, layout, output, perf, even whether an eval separates), it is not the human's to answer. Sketch it via the Prototype playbook (`playbooks/prototype.md`) and let the result decide. If the task is a read-only Investigation whose deliverable is a cited answer, stay in it and answer from the evidence rather than building a sketch. A product or preference call no experiment can settle, or an always-pause item, goes to the owner and the run pauses.
 - Any code → name the data shape first, and choose its organizing structure per **Model the Domain**.
-- Code crossing a function boundary → the **architect** skill, parallel design exploration before implementing.
-- Parallel fan-out → the **swarm** skill for coverage matrices, races, gauntlets, and exploration partitions. Use **arena** for design or code bakeoffs with base selection and grafting.
-- Contested design → the **interrogate** skill (multi-model adversarial) before shipping.
+- Code crossing a function boundary → the **architect** skill, one design sketch before implementing.
+- Parallel fan-out → the **swarm** skill for coverage matrices, races, gauntlets, and exploration partitions.
 - Nontrivial multi-step → write the throughput checkpoint (Feature step 4).
 - Any prose surface, your reply to the user included, and docs, RFCs, readmes, PR descriptions, and commit messages → the **unslop** skill. Write the reply per **Writing the reply**.
 - Before commit → reread the diff and cut slop yourself: restated comments, speculative guards, wrappers with one caller, and leftover debugging.
@@ -111,7 +110,7 @@ An answer relayed by the session that started this run counts as the owner's ans
 - Verification and swarm workers: `model: "sonnet"`, `effort: "high"`.
 - A "mixed panel" is one `opus` plus one `sonnet`.
 
-The routed skills (`how`, `why`, `arena`, `swarm`, `architect`, `interrogate`) state their own model the same way.
+The routed skills (`how`, `why`, `swarm`, `architect`, `interrogate`) state their own model the same way.
 
 **Match the model to the job.** Before each spawn, start from the role's default and pick the reasoning level the job needs. Raise `effort` one step, up to max, for the hardest or subtlest work. Lower it one step for judgment and two or more steps for routine work. Verification is the exception and stays at `sonnet` `high`. Change only the effort, and keep the model the role names, so a mixed `opus` and `sonnet` panel stays mixed. If `Agent` rejects the model or effort, don't try another adjusted value. Use the role's default and say so. If it rejects that too, omit `model` so the subagent runs on the parent model, and say so.
 

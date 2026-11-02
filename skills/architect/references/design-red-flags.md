@@ -1,6 +1,6 @@
 # Design red flags
 
-Screen every candidate before synthesis. A red flag is a reason to revise or reject the shape.
+Screen the design before implementing. A red flag is a reason to revise or reject the shape.
 
 ## Shallow module
 

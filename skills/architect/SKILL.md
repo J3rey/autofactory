@@ -6,7 +6,7 @@ disable-model-invocation: true
 
 # Architect
 
-Sketch types, function signatures, class shapes, and module boundaries with `not implemented` bodies and pseudocode. Synthesize across multiple model perspectives, then fill in code against the chosen sketch.
+Sketch types, function signatures, class shapes, and module boundaries with `not implemented` bodies and pseudocode. Produce one design, then fill in code against it.
 
 ## Start
 
@@ -26,31 +26,33 @@ Skip Phase A only when the work is genuinely greenfield with no surrounding syst
 
 ## Phase B: Sketch
 
-Read `../arena/SKILL.md` and follow it with the design-sketch task and the Phase A grounding artifacts. Pass `references/runner-prompt.md` as each runner's prompt.
+Produce one design sketch from the Phase A grounding. Do it yourself. When the work is large, spawn one `opus` subagent at `xhigh` (`subagent_type: "general-purpose"`) and give it the task and the Phase A artifacts.
 
-The runners are one `opus` at `xhigh` and one `sonnet` at `high`, as in the **arena** skill's Phase A.
+Apply these checks as you sketch.
 
-Design it twice. Require at least two structurally distinct candidates before synthesis, even when the first looks sufficient. This is the **Exhaust the Design Space** principle made concrete. Whole-shape alternatives, not point fixes inside one shape.
+- Caller's usage first. Write the README-style usage and two or three real call sites before the types, then derive the type sketch from them. The usage is the spec. Reconcile the sketch to the usage, not the reverse.
+- Data structures first. Trace each dominant access pattern through the proposed structure. If the answer is "we'll add a map / index / cache later," the structure is wrong.
+- Shared state: if two actors might both write, default to per-actor state with a merge at the read boundary, per the **Separate Before Serializing Shared State** principle.
 
-Screen every candidate against [`references/design-red-flags.md`](references/design-red-flags.md) before synthesis. Assume the next contributor is an agent that sees only the files it opened, copies the nearest example, and takes the shortest path that compiles. Prefer the design where a change that looks right from one file is right for the whole repo.
+Screen the design against [`references/design-red-flags.md`](references/design-red-flags.md). Assume the next contributor is an agent that sees only the files it opened, copies the nearest example, and takes the shortest path that compiles. Prefer the design where a change that looks right from one file is right for the whole repo.
 
-Compare viable candidates on interface depth. Prefer the design that hides more complexity behind a smaller, simpler public surface. A rich interface can keep call chains short by concentrating capability instead of scattering it across layers.
+Judge interface depth. Prefer the design that hides more complexity behind a smaller, simpler public surface. A rich interface can keep call chains short by concentrating capability instead of scattering it across layers. Do not put transport or wire types on the public API.
 
-Arena returns one synthesized design package. Its synthesis decision fills the rationale's "Synthesis decision" section.
+Revise the design until it passes the red flags. One design ships.
 
 ## Phase C: Agree (opt-in)
 
-Default: proceed directly to implementation with the synthesized design. No human checkpoint.
+Default: proceed directly to implementation with the design. No human checkpoint.
 
-Opt in to a checkpoint when the invoker explicitly asks: "/autofactory:architect with checkpoint," "stop and show me before implementing," or similar. Then surface the synthesized design and pause for sign-off.
+Opt in to a checkpoint when the invoker explicitly asks: "/autofactory:architect with checkpoint," "stop and show me before implementing," or similar. Then surface the design and pause for sign-off.
 
-The synthesis can ship as its own commit either way, as the "scaffold first" mode of the **Foundational Thinking** principle. Planned and scoped breakage during fill-in is fine, per the **Outcome-Oriented Execution** principle. For adversarial pressure on the design before implementing, read `../interrogate/SKILL.md` and follow it on the synthesized sketch.
+The sketch can ship as its own commit either way, as the "scaffold first" mode of the **Foundational Thinking** principle. Planned and scoped breakage during fill-in is fine, per the **Outcome-Oriented Execution** principle. For adversarial pressure on the design before implementing, read `../interrogate/SKILL.md` and follow it on the sketch.
 
-If the human pushes back on the shape (in a checkpoint or after the fact), treat that as Phase A evidence. Re-ground and re-run Phase B before writing more code.
+If the human pushes back on the shape (in a checkpoint or after the fact), treat that as Phase A evidence. Re-ground and redo Phase B before writing more code.
 
 ## Phase D: Implement against the sketch
 
-Replace `not implemented` bodies with code, pseudocode with logic. The synthesized sketch is the contract. Deviations from it are signal to surface, not friction to absorb silently. If a function needs a parameter the sketch didn't anticipate, ask whether the sketch was wrong, the requirement was missed, or the implementation is overreaching.
+Replace `not implemented` bodies with code, pseudocode with logic. The sketch is the contract. Deviations from it are signal to surface, not friction to absorb silently. If a function needs a parameter the sketch didn't anticipate, ask whether the sketch was wrong, the requirement was missed, or the implementation is overreaching.
 
 ## Phase E: Scrap when the architecture is wrong
 
@@ -72,8 +74,8 @@ When you scrap:
 1. Re-run `../how/SKILL.md` over what's been built.
 2. Redesign as if the new constraints had been day-one assumptions, per the **Redesign from First Principles** principle.
 3. Subtract before adding, per the **Subtract Before You Add** principle. The new sketch should be smaller than the old one before it grows.
-4. Return to Phase B and re-run arena.
+4. Return to Phase B.
 
 ## Outputs
 
-The caller's usage is written first and the type sketch derived from it. One file with new types and signatures for small changes. Module map plus type definitions for larger work. The rationale ships alongside, shaped per `references/rationale-template.md`, including the usage sketch and the synthesis decision.
+The caller's usage is written first and the type sketch derived from it. One file with new types and signatures for small changes. Module map plus type definitions for larger work. The rationale ships alongside, shaped per `references/rationale-template.md`, including the usage sketch.

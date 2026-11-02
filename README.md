@@ -33,7 +33,7 @@ Add `.claude/foreman/` to the project's `.gitignore`.
 - `foreman`: matches the job to a recipe, runs it to done, pauses only for big decisions.
 - `how`: explains how a subsystem works before you change it.
 - `why`: finds the reasons behind code, from git history, tickets, docs, chat, and incident data.
-- `architect`: sketches types and module shape from several competing designs before code.
+- `architect`: sketches the types and module shape before code.
 - `arena`: runs several candidates at one task, picks a base, grafts the best parts of the rest.
 - `swarm`: fans out parallel workers and returns one report.
 - `interrogate`: adversaries try to break a change, and only findings proven by a run survive.
