@@ -33,6 +33,7 @@ Add `.claude/foreman/` to the project's `.gitignore`.
 - `foreman`: matches the job to a recipe, runs it to done, pauses only for big decisions.
 - `how`: explains how a subsystem works before you change it.
 - `why`: finds the reasons behind code, from git history, tickets, docs, chat, and incident data.
+- `shape`: shapes a fuzzy feature ask into an agreed spec, one question at a time; adapted from superpowers brainstorming.
 - `architect`: sketches the types and module shape before code.
 - `arena`: runs several candidates at one task, picks a base, grafts the best parts of the rest.
 - `swarm`: fans out parallel workers and returns one report.
@@ -57,3 +58,5 @@ Add `.claude/foreman/` to the project's `.gitignore`.
 ## Credit
 
 Built on [pstack](https://github.com/backnotprop/pstack) by Lauren Tan (poteto), mirrored from [cursor/plugins](https://github.com/cursor/plugins/tree/main/pstack). Copied at upstream commit `25abb38559ddbabec563646224d09eff9a250eca` (2026-11-01), then trimmed to what foreman uses and rewritten for Claude Code. To pull later upstream changes, diff against a newer upstream commit by hand. MIT licensed; see `LICENSE`.
+
+The `shape` skill is adapted from the brainstorming skill in [superpowers](https://github.com/obra/superpowers) by Jesse Vincent. MIT licensed, Copyright (c) 2025 Jesse Vincent; the notice ships in `skills/shape/LICENSE`.

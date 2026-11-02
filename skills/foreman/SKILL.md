@@ -22,11 +22,12 @@ Remaining triggers:
 
 - Your first message on a task → open with the line from **Run visibility**, then tell the user, in your own words, their goal, the problem they are solving, and, if the task ships a change, the smallest change you expect to meet it. Don't wait for confirmation. If the evidence rules out the change the user asked for, show it and stop. Restate the user's goal in each subagent brief, and open each PR's `## Why` with it when foreman's PR body format applies. Unless the project sets its own reply style, open each final report with it too, your final reply included, except after a fully specified one-line edit.
 - Nontrivial change, architecture decision, or "are we sure?" → the **how** skill.
+- Fuzzy feature ask (no who, no definition of done, no screen or surface) → the **shape** skill, through the Feature or Prototype recipe's Shape step.
 - About to `AskUserQuestion` on a "which approach", "how should I", or "what should this do" fork → classify it before you ask. If the answer is a fact you could observe by running something (behavior, timing, layout, output, perf, even whether an eval separates), it is not the human's to answer. Sketch it via the Prototype playbook (`playbooks/prototype.md`) and let the result decide. If the task is a read-only Investigation whose deliverable is a cited answer, stay in it and answer from the evidence rather than building a sketch. A product or preference call no experiment can settle, or an always-pause item, goes to the owner and the run pauses.
 - Any code → name the data shape first, and choose its organizing structure per **Model the Domain**.
 - Code crossing a function boundary → the **architect** skill, one design sketch before implementing.
 - Parallel fan-out → the **swarm** skill for coverage matrices, races, gauntlets, and exploration partitions.
-- Nontrivial multi-step → write the throughput checkpoint (Feature step 4).
+- Nontrivial multi-step → write the throughput checkpoint (Feature step 5).
 - Any prose surface, your reply to the user included, and docs, RFCs, readmes, PR descriptions, and commit messages → the **unslop** skill. Write the reply per **Writing the reply**.
 - Before commit → reread the diff and cut slop yourself: restated comments, speculative guards, wrappers with one caller, and leftover debugging.
 - Shipping UI / IDE / CLI → drive the real surface: Playwright or a CDP browser for web and Electron, tmux or a PTY for CLIs and TUIs. For bug fixes, reproduce first on the same surface yourself. Hand to the user only under the narrow Bug fix step 2 exception. When you start a dev server, pick a free port (check with `lsof -ti :<port>`) and never assume the default, since other runs may hold it.
@@ -91,6 +92,7 @@ Read its section in `references/principles.md` for any principle you apply. Each
 - Real-money spend beyond the $0 defaults.
 - Product decisions users would notice.
 - Adding a dependency.
+- Shaping an unclear feature with the owner (the **shape** skill's whole interview).
 
 To pause, set the run state to `paused` (see Run state), then ask one plain-English question with the recommended answer first via `AskUserQuestion`, which waits inside the turn. After the answer, set the state back to `running`. If the tool is unavailable, ask in chat and end the turn. Park the work. Waiting is never permission to pick a default.
 
@@ -141,6 +143,7 @@ Comments follow the same rule as the reply. Write them clean as you go. Keep a c
 At task start, read `<repo>/.claude/foreman.md` if it exists. Its sections are `## Step map`, `## Sizing`, `## Proof`, `## Always pause`, and `## Reproduce`. The template is `references/project-file-template.md`.
 
 - Step map entries override the plugin skill for that step.
+- A project may map `Shape` to its own interviewing skill. If the mapped skill isn't installed, fall back to the bundled **shape** skill.
 - Always pause adds to the plugin list in Autonomy.
 - Sizing, Proof, and Reproduce feed the recipes.
 - If the session already sits in a worktree on a branch with no commits beyond the integration branch, that is the isolated branch. Skip the "start isolated work" step. When landing deletes the worktree the session stands in, `cd` to the main checkout first.
