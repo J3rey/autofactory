@@ -2,6 +2,8 @@
 
 An agentic software factory for Claude Code. One `foreman` skill routes every job through plan, build, review and ship.
 
+**New here?** Read the [guide](docs/guide.md).
+
 ## Install
 
 ```
@@ -14,17 +16,6 @@ An agentic software factory for Claude Code. One `foreman` skill routes every jo
 ```
 /autofactory:foreman <job>
 ```
-
-## How a run works
-
-1. `/autofactory:foreman <job>` starts it. Foreman marks the run as `running` in `.claude/foreman/run.json` itself as its first action. A `UserPromptSubmit` hook does the same when the command is typed directly. A second run in the same folder is flagged as a clash, and foreman pauses for you instead of overwriting the first. Its first message opens with `Foreman is on: <Recipe>`, and when the host offers a session-rename or notification tool, the session title shows the recipe and its state (running, paused, done) and you get a notification when the run pauses for you or finishes.
-2. Foreman reads `<repo>/.claude/foreman.md` if the project has one (template: `skills/foreman/references/project-file-template.md`). It maps steps to the project's own skills and adds pause items, sizing rules and proof rules.
-3. It matches the job to a recipe and copies the recipe's steps onto the task list.
-4. It works the steps. Reversible calls it makes itself and logs. Always-pause items (production writes, deploys, real spend, product calls, new dependencies, plus the project's list) set the run to `paused` and wait for your answer.
-5. A `Stop` hook sends a `running` session back to its task list instead of letting the turn end. It adopts an unowned run for the session that is working it. It lets go when the run is `paused` or `done`, after 25 pushes, or when the file is 6 hours stale.
-6. The recipe ends by landing the work through the project's `land` step, then a plain report. The run is set to `done`.
-
-Add `.claude/foreman/` to the project's `.gitignore`.
 
 ## What's in it
 
@@ -49,9 +40,7 @@ Add `.claude/foreman/` to the project's `.gitignore`.
 
 **References** (`skills/foreman/references/`). The 24 engineering principles foreman cites and the project file template for `<repo>/.claude/foreman.md`.
 
-**Hooks.** On `UserPromptSubmit`, starting foreman writes `.claude/foreman/run.json`. On `Stop`, a running foreman session is sent back to its task list instead of ending the turn.
-
-**Progress band.** In the Claude desktop app and terminal, a band above the prompt shows a running foreman job: running, paused or done, the skill in use, and a progress bar over the recipe's steps. Hide it with its button; `/foreman-progress` brings it back.
+**Run state, hooks and the progress band** are explained in the [guide](docs/guide.md).
 
 **Agent.** `autofactory:foreman-agent` is the delegate foreman spawns for code-writing work.
 
