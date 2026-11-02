@@ -176,7 +176,6 @@ All recipes live in `skills/foreman/playbooks/`.
 | Feature | Designs and builds new or changed behavior. | "Add PDF download to the billing page." |
 | Bug fix | Reproduces a bug, finds the real cause, fixes it, proves it. | "Long file names break the upload box." |
 | Refactoring | Changes how code is organized without changing what it does. | "Split the checkout file into smaller parts." |
-| Perf issue | Measures something slow, then fixes it against a baseline. | "The reports page takes 8 seconds to open." |
 | User report | Takes a pasted customer complaint and turns it into a proven fix. | "A customer says: I can't reset my password." |
 | Prototype | Builds a throwaway sketch to settle a design question cheaply. | "Mock up two layouts for the new inbox." |
 | Visual parity | Matches a new screen to an approved mock, checked by image diff. | "Make the live page match the approved mock." |
@@ -188,13 +187,14 @@ All recipes live in `skills/foreman/playbooks/`.
 | Investigation | Read-only. Answers a question with sources. No code changes. | "How does sign-in work, and why was it built this way?" |
 | Runtime forensics | Watches a live program to diagnose a leak or a stuck process. | "The app's memory keeps growing. Why?" |
 | Trace forensics | Reads a captured profile or snapshot you hand over, and diagnoses it. | "Here is a performance trace. What is slow?" |
-| Eval | Tests whether a change to a skill or prompt really improves behavior. | "Does the new prompt beat the old one?" |
 
 ### Numbers
 
 | Recipe | What it does | Example job |
 |---|---|---|
+| Perf issue | Measures something slow, then fixes it against a baseline. | "The reports page takes 8 seconds to open." |
 | Hillclimb | Loops: try one idea, measure, keep or undo, until a target is hit. | "Cut page load time by 40%." |
+| Eval | Tests whether a change to a skill or prompt really improves behavior. | "Does the new prompt beat the old one?" |
 
 ### Big jobs
 
