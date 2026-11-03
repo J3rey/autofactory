@@ -21,7 +21,7 @@ An agentic software factory for Claude Code. One `foreman` skill routes every jo
 
 **Skills.** Start with `foreman`. It reads the others as a run needs them. Each can also be run directly as `/autofactory:<name>`.
 
-- `foreman`: matches the job to a recipe, runs it to done, pauses only for big decisions. Multi-task builds run a task loop: an implementer per task, a task review after each, a capped fix loop, a resume ledger.
+- `foreman`: matches the job to a recipe, runs it to done, pauses only for big decisions. Big features get a written task plan built from the `architect` sketch (files, test first or not, done check per task). Multi-task builds run a task loop: an implementer per task, a task review after each, a capped fix loop, a resume ledger.
 - `how`: explains how a subsystem works before you change it.
 - `why`: finds the reasons behind code, from git history, tickets, docs, chat, and incident data.
 - `shape`: shapes a fuzzy feature ask into an agreed spec, one question at a time; adapted from superpowers brainstorming.

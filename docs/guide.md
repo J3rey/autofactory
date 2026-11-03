@@ -108,7 +108,10 @@ flowchart TD
     F -- "Yes" --> G["Make a mock, you pick one"]
     F -- "No" --> H
     G --> H["Architect: one design sketch"]
-    H --> I["Build task by task"]
+    H --> HP{"Big feature?<br/>(a written spec, or 3+ tasks)"}
+    HP -- "Yes" --> PL["Plan: the sketch written as tasks,<br/>each with its files, test first yes or no,<br/>and its done check"]
+    HP -- "No" --> I
+    PL --> I["Build task by task"]
     I --> J["Implementer builds one task"]
     J --> K["Reviewer checks the task"]
     K --> L{"Problems found?"}
@@ -154,6 +157,7 @@ flowchart TD
   - `why` finds the reasons behind code, from history and tickets.
   - `shape` turns a fuzzy idea into an agreed spec.
   - `architect` sketches the design before any code.
+  - On big features, foreman then writes the sketch down as a task plan file. It adds no new design, it only lists each task's files, whether a test comes first, and how to check it is done.
   - `tdd` writes a failing test first.
   - `swarm` runs several workers in parallel and gives back one report.
   - `arena` tries a task several ways and keeps the best parts.
