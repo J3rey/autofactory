@@ -2,7 +2,7 @@
 
 **You own the design. Plan, review, verify.** Delegate implementation. Stay in the lead.
 
-1. Check it isn't already done. `git fetch`, then look for the issue number or symptom keywords in the integration branch's recent log (`git log origin/<integration> --since=3.days --grep <issue# or keywords>`) and in open and merged PRs (`gh pr list --state all --search "<issue# or keywords>"`). If a merged change already covers it, verify that fix on the integration branch with the cheapest proof, report, set the run `done`, and stop without a new branch. If an open PR or branch is already on it, stop and tell the owner instead of building in parallel.
+1. Check it isn't already done. `git fetch`, then look for the issue number or symptom keywords in the integration branch's recent log (`git log origin/<integration> --since=3.days --grep <issue# or keywords>`) and in open and merged PRs (`gh pr list --state all --search "<issue# or keywords>"`). If a merged change already covers it, verify that fix on the integration branch with the cheapest proof, report, run `node <skill dir>/scripts/run-state.mjs done`, and stop without a new branch. If an open PR or branch is already on it, stop and tell the owner instead of building in parallel.
 2. `how` over the affected subsystem.
 3. Shape: if the ask is unclear (it doesn't say who it's for, what done looks like, or which screen or surface), run the **shape** skill, or the project's Step map entry for `Shape` if it names one. If the owner's job names an interviewing skill ("grill me", "grill with docs", or a skill name) and it is installed, use it for Shape instead. If it isn't installed, say so and use **shape**. Skip when the job is already specific, and log the skip.
 4. `architect` to sketch the design.

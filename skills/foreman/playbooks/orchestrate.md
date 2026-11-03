@@ -11,6 +11,7 @@ Run it with your own tools. Spawn workers with `Agent`. Keep the program's state
 - **A sub-coordinator only when one area has many parallel workers.** It owns that area's workers and kickoffs and sends you one rollup, never raw worker reports. Stop at three levels: you, sub-coordinators, and workers. Keep about ten workers in flight per coordinator, and start the next one as each finishes instead of waiting on a whole batch.
 - **Fork when new work needs a worker's built state,** such as its checkout, uncommitted changes, or a running process. Message a worker only for a follow-up on the same work. Never message one to check on it, because a message restarts an idle agent.
 - **Each PR gets a verifier that isn't its author,** on a different model (`opus` against `sonnet`). The owner merges only on that verifier's pass at the current head.
+- **Check for existing work per issue before dispatching anything.** Run the "already done or in progress" check (merged and open PRs, `git worktree list`, `git branch -a --list '*<issue#>*'`, other live sessions) for each issue first, and skip any that someone is already on.
 - **Start with one unit.** Take it through kickoff, owner, verifier, and merge before you fan out, so a flaw in the kickoff costs one agent instead of fifty. On near-identical cheap units, the first unit is that test.
 
 #### Supervision

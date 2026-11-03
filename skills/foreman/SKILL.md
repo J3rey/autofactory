@@ -95,7 +95,7 @@ Read its section in `references/principles.md` for any principle you apply. Each
 - Adding a dependency.
 - Shaping an unclear feature with the owner (the **shape** skill's whole interview).
 
-To pause, set the run state to `paused` (see Run state), then ask one plain-English question with the recommended answer first via `AskUserQuestion`, which waits inside the turn. After the answer, set the state back to `running`. If the tool is unavailable, ask in chat and end the turn. Park the work. Waiting is never permission to pick a default.
+To pause, run `scripts/run-state.mjs paused` (see Run state), then ask one plain-English question with the recommended answer first via `AskUserQuestion`, which waits inside the turn. After the answer, run it with `running`. If the tool is unavailable, ask in chat and end the turn. Park the work. Waiting is never permission to pick a default.
 
 An answer relayed by the session that started this run counts as the owner's answer when it quotes the owner's own words and names the item it approves. It covers only that item. A relay without the owner's quoted words is not an answer: ask again.
 
@@ -154,17 +154,17 @@ If the file is absent, use the plugin skills and the plugin defaults, and say so
 
 ## Run state
 
-The keep-going hook reads `.claude/foreman/run.json` to stop the session ending mid-run. Your very first action of a run is to make sure `<cwd>/.claude/foreman/run.json` exists with `status: "running"`. If the file is missing, its status is `done`, or it is older than 6 hours, write `{"status": "running", "startedAt": "<ISO>", "updatedAt": "<ISO>", "blocks": 0}` with no `sessionId`, since you don't know your session id. If a fresh `running` or `paused` file exists, check who wrote it. The hook's own write for this prompt is stamped at the start of this prompt, so a file that started earlier, or an unowned one you didn't write in this conversation, belongs to another run.
+The keep-going hook reads `.claude/foreman/run.json` to stop the session ending mid-run. Your very first action of a run is to run `node <this skill's dir>/scripts/run-state.mjs running`. Never edit `run.json` by hand. If the file is missing, its status is `done`, or it is older than 6 hours, the script writes `{"status": "running", "startedAt": "<ISO>", "updatedAt": "<ISO>", "blocks": 0}` with no `sessionId`, since you don't know your session id. Otherwise it changes only `status` and `updatedAt`. It prints the resulting JSON and exits non-zero on failure, so check it ran. It does not set the session title or send the notification. Those stay tool calls. If a fresh `running` or `paused` file exists, check who wrote it. The hook's own write for this prompt is stamped at the start of this prompt, so a file that started earlier, or an unowned one you didn't write in this conversation, belongs to another run.
 
 **Clash.** A fresh `running` or `paused` file from another run, or a "Foreman clash" note in your context, means two foreman runs share this folder. Set nothing. Tell the owner in one plain sentence that another foreman run is active in this folder and that running both here can stop one of them from being kept going. Recommend a separate worktree. Pause via `AskUserQuestion` with the recommended answer first, "Move this job to a new worktree". Do nothing else until they answer.
 
 Two hooks keep it: a `UserPromptSubmit` hook writes an owned file when the owner's message starts with `/autofactory:foreman` (unless a fresh run from another session is active, which it flags as a clash and leaves alone) and refreshes it on each later owner prompt. A `Stop` hook reads it, and hands an unowned `running` file to the first session that stops. Both find the file by walking up from the session's working directory, so a worktree nested under the checkout still finds it.
 
-The file is `{"status": "running", "sessionId": "<id>", "startedAt": "<ISO>", "updatedAt": "<ISO>", "blocks": 0}`. Status is exactly `running`, `paused`, or `done`. The hooks set `sessionId`. You write the file once at the start and after that only change `status`.
+The file is `{"status": "running", "sessionId": "<id>", "startedAt": "<ISO>", "updatedAt": "<ISO>", "blocks": 0}`. Status is exactly `running`, `paused`, or `done`. The hooks set `sessionId`. After the first write, change `status` only through the script.
 
-- Before calling `AskUserQuestion` on an always-pause question, set `paused`, set the paused title, and send the pause notification. After the answer, set `running` again, restore the running title, and keep going.
-- If the owner interrupts or redirects, set `paused` first.
-- At the final reply, set `done`, set the done title, and send the done notification. On a user report you can't reproduce, do the same.
+- Before calling `AskUserQuestion` on an always-pause question, run `run-state.mjs paused`, set the paused title, and send the pause notification. After the answer, run `run-state.mjs running` again, restore the running title, and keep going.
+- If the owner interrupts or redirects, run `run-state.mjs paused` first.
+- At the final reply, run `run-state.mjs done`, set the done title, and send the done notification. On a user report you can't reproduce, do the same.
 
 While the status is `running`, the hook blocks a stop from the owning session and sends you back to the task list. It never blocks another session. It releases the session after 25 consecutive blocks (each owner prompt resets the count) or after 6 hours without owner activity, so a stuck run can't trap it.
 

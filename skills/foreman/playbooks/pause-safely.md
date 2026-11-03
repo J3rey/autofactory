@@ -2,7 +2,7 @@
 
 **You own a clean stop. Leave a checkpoint a cold-start agent can resume from.** This is explicit only. On "keep going", "going to bed, keep going", or "don't stop", do not pause.
 
-1. Set `.claude/foreman/run.json` status to `paused` so the keep-going hook lets the session stop.
+1. Run `node <skill dir>/scripts/run-state.mjs paused` so the keep-going hook lets the session stop.
 2. Stop at a safe boundary. Finish the current atomic step or back out of it. Start nothing new, and cancel any nested subagents.
 3. Take no irreversible action to pause. No PR and no push unless you already had one out.
 4. Make the work durable. Commit uncommitted edits as one clear `wip:` commit on the current branch so nothing is lost. If the tree is broken, say so in the commit body in one line.
