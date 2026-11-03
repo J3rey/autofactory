@@ -1,7 +1,6 @@
 ---
 name: foreman
 description: The one entry point for any non-trivial job: matches it to a recipe, runs it autonomously to done, pauses only for big decisions. Use for /autofactory:foreman.
-disable-model-invocation: true
 icon: crown
 color: yellow
 ---
@@ -9,6 +8,8 @@ color: yellow
 # Foreman
 
 Bundled skills live at `../<name>/SKILL.md` from this file. Where this file or a playbook names a bundled skill in bold, read that file and follow it. Put this file's absolute path in every `foreman-agent` prompt.
+
+**When to start.** Start foreman only when the user asks for it in their own words, or when a session the user started has been told to run foreman on a named issue. Never start it because a task merely looks like it would benefit.
 
 **Project rules win.** Where the project's `CLAUDE.md` or its Step map skills set reply style, commit granularity, or the PR body format, those win over this skill. Wherever this file or a playbook states one of those rules, read it as "unless the project sets its own".
 
