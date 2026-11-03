@@ -211,8 +211,8 @@ spec is approved, or once they opt out of the questions.
 Your human partner approves the spec in chat or in the document. Then
 this skill is done. Do not start design or build yourself.
 
-- **Called by a recipe** (Feature or Prototype): set the run back to
-  `running`, log the spec path in one line, and return to the recipe's
+- **Called by a recipe** (Feature or Prototype): run
+  `node <foreman skill dir>/scripts/run-state.mjs running`, log the spec path in one line, and return to the recipe's
   next step (`architect` in Feature).
 - **Run directly** (`/autofactory:shape`): stop, and say the spec path.
 
