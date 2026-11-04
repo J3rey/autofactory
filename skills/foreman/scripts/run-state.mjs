@@ -18,23 +18,26 @@ export function findRunFile(cwd) {
   }
 }
 
-export function nextState(status, existing, now) {
+// An ownerless run gets adopted by the first session whose Stop hook sees it, which can be an
+// unrelated chat in the same checkout, so stamp the calling session whenever we know it.
+export function nextState(status, existing, now, sessionId) {
   const iso = now.toISOString()
+  const owner = sessionId ? { sessionId } : {}
   const updated = existing ? Date.parse(existing.updatedAt) : NaN
   const stale = !Number.isFinite(updated) || now.getTime() - updated > STALE_MS
   if (status === 'running' && (!existing || existing.status === 'done' || stale)) {
-    return { status: 'running', startedAt: iso, updatedAt: iso, blocks: 0 }
+    return { status: 'running', ...owner, startedAt: iso, updatedAt: iso, blocks: 0 }
   }
-  if (!existing) return { status, startedAt: iso, updatedAt: iso, blocks: 0 }
-  return { ...existing, status, updatedAt: iso }
+  if (!existing) return { status, ...owner, startedAt: iso, updatedAt: iso, blocks: 0 }
+  return { ...owner, ...existing, status, updatedAt: iso }
 }
 
-export function setRunState(status, cwd, now = new Date()) {
+export function setRunState(status, cwd, now = new Date(), sessionId = process.env.CLAUDE_CODE_SESSION_ID) {
   if (!STATUSES.includes(status)) throw new Error(USAGE)
   const found = findRunFile(cwd)
   const file = found ?? path.join(path.resolve(cwd), '.claude', 'foreman', 'run.json')
   const existing = found ? JSON.parse(fs.readFileSync(found, 'utf8')) : null
-  const state = nextState(status, existing, now)
+  const state = nextState(status, existing, now, sessionId)
   fs.mkdirSync(path.dirname(file), { recursive: true })
   const tmp = `${file}.${process.pid}.tmp`
   fs.writeFileSync(tmp, JSON.stringify(state, null, 2))

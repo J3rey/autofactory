@@ -31,32 +31,43 @@ const live = (over = {}) => ({
   ...over,
 })
 
-test('creates a fresh running file with no sessionId', () => {
+test('creates a fresh running file with no sessionId when the session is unknown', () => {
   const cwd = project()
-  const state = setRunState('running', cwd, now)
+  const state = setRunState('running', cwd, now, '')
   assert.deepEqual(state, { status: 'running', startedAt: now.toISOString(), updatedAt: now.toISOString(), blocks: 0 })
   assert.deepEqual(readState(cwd), state)
 })
 
 test('status flip keeps sessionId, startedAt and blocks', () => {
   const cwd = project(live())
-  setRunState('running', cwd, now)
+  setRunState('running', cwd, now, 'other')
   assert.deepEqual(readState(cwd), live({ status: 'running', updatedAt: now.toISOString() }))
 })
 
 test('stale running restarts fresh', () => {
   const cwd = project(live({ status: 'running', updatedAt: '2026-11-01T01:00:00Z' }))
-  const state = setRunState('running', cwd, now)
-  assert.equal(state.sessionId, undefined)
+  const state = setRunState('running', cwd, now, 'me')
+  assert.equal(state.sessionId, 'me')
   assert.equal(state.blocks, 0)
   assert.equal(state.startedAt, now.toISOString())
 })
 
 test('done restarts fresh on running', () => {
   const cwd = project(live({ status: 'done' }))
-  const state = setRunState('running', cwd, now)
-  assert.equal(state.sessionId, undefined)
+  const state = setRunState('running', cwd, now, 'me')
+  assert.equal(state.sessionId, 'me')
   assert.equal(state.startedAt, now.toISOString())
+})
+
+test('fresh running records the calling session as owner', () => {
+  const cwd = project()
+  assert.equal(setRunState('running', cwd, now, 'me').sessionId, 'me')
+  assert.equal(readState(cwd).sessionId, 'me')
+})
+
+test('flip on an ownerless run records the calling session', () => {
+  const cwd = project(live({ sessionId: undefined }))
+  assert.equal(setRunState('running', cwd, now, 'me').sessionId, 'me')
 })
 
 test('paused and done create the file when missing', () => {
@@ -92,7 +103,11 @@ test('unparseable file exits non-zero', () => {
 
 test('CLI prints the resulting JSON', () => {
   const cwd = project()
-  const r = spawnSync('node', [script, 'running', cwd], { encoding: 'utf8' })
+  const r = spawnSync('node', [script, 'running', cwd], {
+    encoding: 'utf8',
+    env: { ...process.env, CLAUDE_CODE_SESSION_ID: 'cli-session' },
+  })
   assert.equal(r.status, 0)
   assert.equal(JSON.parse(r.stdout).status, 'running')
+  assert.equal(JSON.parse(r.stdout).sessionId, 'cli-session')
 })
