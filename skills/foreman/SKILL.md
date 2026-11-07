@@ -192,7 +192,7 @@ A large or cross-cutting effort (a migration across many call sites, an ambitiou
 - **Feature.** New or changed behavior, built from a named data shape.
 - **Refactoring.** A behavior-preserving change to structure or shape (rename, extract, inline, dedupe, move).
 - **Prototype.** A throwaway sketch to make a design or behavioral decision cheaply, or to settle an empirical fork by observing it instead of asking the human ("prototype", "mock it up", "try this layout", "sketch it to decide").
-- **Visual parity.** Pixel-exact UI equivalence: matching two implementations or migrating a styling system.
+- **Visual parity.** Pixel-exact UI equivalence: matching two implementations, migrating a styling system, or matching an approved mock when building or changing UI from it. Feature chains it when the job names a mock.
 - **Authoring or modifying a skill.** Writing or editing a SKILL.md. File: `playbooks/authoring-a-skill.md`.
 - **Eval.** Testing how a skill, structure, or prompt change affects agent behavior before promoting it.
 - **Autonomous run.** A long task to drive to completion without stopping ("run until done", "/loop until X").

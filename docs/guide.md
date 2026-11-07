@@ -120,7 +120,7 @@ flowchart TD
     L -- "Still open after 5 rounds" --> P2["Pause: ask you"]
     L -- "No" --> N{"More tasks?"}
     N -- "Yes" --> I
-    N -- "No" --> O["Prove it works on the real thing"]
+    N -- "No" --> O["Prove it works on the real thing<br/>(built from a mock: image-diff every screen against it)"]
     O --> Q{"Big change?<br/>(per your project's Sizing)"}
     Q -- "Yes" --> R["Code review + break-it check"]
     Q -- "No" --> S
