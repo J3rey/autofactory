@@ -8,7 +8,7 @@ const STALE_MS = 6 * 60 * 60 * 1000
 function clashNote(file, sessionId, now) {
   if (!fs.existsSync(file)) return null
   const state = JSON.parse(fs.readFileSync(file, 'utf8'))
-  if (state.status !== 'running' && state.status !== 'paused') return null
+  if (state.status === 'done') return null
   const updated = Date.parse(state.updatedAt)
   if (!Number.isFinite(updated) || now.getTime() - updated > STALE_MS) return null
   if (typeof state.sessionId === 'string' && state.sessionId === sessionId) return null

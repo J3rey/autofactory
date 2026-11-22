@@ -2,9 +2,9 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { pathToFileURL } from 'node:url'
 
-const STATUSES = ['running', 'paused', 'done']
+const STATUSES = ['running', 'paused', 'waiting', 'done']
 const STALE_MS = 6 * 60 * 60 * 1000
-const USAGE = 'usage: run-state.mjs <running|paused|done> [cwd]'
+const USAGE = 'usage: run-state.mjs <running|paused|waiting|done> [cwd]'
 
 // duplicated from hooks/keep-going.mjs so the skill script does not depend on the hooks dir layout
 export function findRunFile(cwd) {

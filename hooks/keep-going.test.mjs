@@ -57,6 +57,10 @@ test('allows stop when paused', () => {
   assert.deepEqual(decide(input(project(running({ status: 'paused' }))), now), { block: false })
 })
 
+test('allows stop while waiting on its own subagents', () => {
+  assert.deepEqual(decide(input(project(running({ status: 'waiting' }))), now), { block: false })
+})
+
 test('allows stop when done', () => {
   assert.deepEqual(decide(input(project(running({ status: 'done' }))), now), { block: false })
 })
