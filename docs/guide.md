@@ -62,7 +62,7 @@ Foreman · running · skill: foreman  [Hide]
 ██████████████░░░░░░░░░░░░░░░░ 5/12 · Reproduce the bug
 ```
 
-- The first line shows the state (running, paused or done) and the skill in use. The color changes: cyan for running, yellow for paused, green for done.
+- The first line shows the state (running, paused, waiting or done) and the skill in use. The color changes: cyan for running and waiting, yellow for paused, green for done.
 - The second line is a progress bar over the recipe's steps, a count of finished steps, and the step in progress.
 - Press **Hide** to tuck it away. Type `/foreman-progress` to bring it back.
 
@@ -133,7 +133,7 @@ flowchart TD
 
 Two things worth knowing about this picture.
 
-- **The keep-going loop.** Claude normally stops at the end of every reply. During a run, a small helper (a "Stop hook") sends it back to its task list instead, so a long job does not die half way. It lets go when the run is paused or done, after 25 pushes in a row, or when the notes are 6 hours old.
+- **The keep-going loop.** Claude normally stops at the end of every reply. During a run, a small helper (a "Stop hook") sends it back to its task list instead, so a long job does not die half way. It lets go when the run is paused, waiting on its own helper agents, or done, after 25 pushes in a row, or when the notes are 6 hours old.
 - **Pauses.** Any step can pause if it reaches an always-pause item from section 5. The picture shows the two most common ones. After your answer the run goes back to where it stopped.
 
 ## 7. The parts
@@ -274,13 +274,15 @@ A short example for a fictional app called Acme:
 
 ## 10. Run state
 
-Foreman keeps one small hidden file, `.claude/foreman/run.json`, that says whether a job is **running**, **paused** or **done**. The keep-going helper and the progress band both read it. Foreman writes it as its very first action, and a hook writes it too when you type the command yourself. If a second job starts in the same folder while the first is active, foreman spots the clash, warns you in one sentence, recommends a separate worktree, and waits for your answer.
+Foreman keeps one small hidden file, `.claude/foreman/run.json`, that says whether a job is **running**, **paused**, **waiting** (on its own helper agents) or **done**. The keep-going helper and the progress band both read it. Foreman writes it as its very first action, and a hook writes it too when you type the command yourself. If a second job starts in the same folder while the first is active, foreman spots the clash, warns you in one sentence, recommends a separate worktree, and waits for your answer.
 
 ```mermaid
 stateDiagram-v2
     [*] --> running: foreman starts a job
     running --> paused: needs your decision, you interrupt, or another run clashes
     paused --> running: you answer
+    running --> waiting: only background helpers left to finish
+    waiting --> running: a helper reports back
     running --> done: final report sent
     paused --> done: job ended without a build
     done --> [*]

@@ -70,8 +70,8 @@ test('flip on an ownerless run records the calling session', () => {
   assert.equal(setRunState('running', cwd, now, 'me').sessionId, 'me')
 })
 
-test('paused and done create the file when missing', () => {
-  for (const status of ['paused', 'done']) {
+test('paused, waiting and done create the file when missing', () => {
+  for (const status of ['paused', 'waiting', 'done']) {
     const cwd = project()
     assert.equal(setRunState(status, cwd, now).status, status)
     assert.equal(readState(cwd).status, status)

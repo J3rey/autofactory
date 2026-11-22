@@ -80,6 +80,14 @@ test('flags a fresh paused file owned by another session', () => {
   assert.deepEqual(readState(cwd), before)
 })
 
+test('flags a fresh waiting file owned by another session', () => {
+  const cwd = tmp()
+  const before = { status: 'waiting', sessionId: 's1', startedAt: '2026-11-01T10:00:00Z', updatedAt: '2026-11-01T11:00:00Z', blocks: 0 }
+  seed(cwd, before)
+  assert.equal(claim({ session_id: 's2', cwd, prompt: foreman }, now), clashFor('waiting', before.startedAt))
+  assert.deepEqual(readState(cwd), before)
+})
+
 test('flags a fresh unowned running file', () => {
   const cwd = tmp()
   const before = { status: 'running', startedAt: '2026-11-01T10:00:00Z', updatedAt: '2026-11-01T11:00:00Z', blocks: 0 }

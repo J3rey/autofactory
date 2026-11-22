@@ -6,7 +6,7 @@ const MAX_BLOCKS = 25
 const STALE_MS = 6 * 60 * 60 * 1000
 const ALLOW = { block: false }
 const REASON =
-  'Foreman run is still running: finish the remaining task-list steps, or if you are waiting on the owner set .claude/foreman/run.json status to "paused" (or "done" when finished) before stopping.'
+  'Foreman run is still running: finish the remaining task-list steps, or if you are waiting set .claude/foreman/run.json status through run-state.mjs: "paused" for the owner, "waiting" for your own background subagents, "done" when finished.'
 
 export function findRunFile(cwd) {
   let dir = path.resolve(cwd)

@@ -51,7 +51,7 @@ export function applyPlan(steps: Step[], args: Record<string, unknown>): Step[] 
 }
 
 const isRunStatus = (v: unknown): v is RunStatus =>
-  v === 'running' || v === 'paused' || v === 'done'
+  v === 'running' || v === 'paused' || v === 'waiting' || v === 'done'
 
 export const register: Register = on => {
   on('session.start', async ($, e, next) => {
@@ -93,7 +93,7 @@ export const register: Register = on => {
     return next(e)
   }).catch(($, e, next) => next(e))
 
-  // The keep-going hook's run.json is foreman's own record of running/paused/done.
+  // The keep-going hook's run.json is foreman's own record of running/paused/waiting/done.
   // It also picks up a run that started before this mod loaded, if this session owns it.
   on('turn.complete', async ($, e, next) => {
     try {
