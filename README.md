@@ -42,10 +42,10 @@ An agentic software factory for Claude Code. One `foreman` skill routes every jo
 
 **Run state, hooks and the progress band** are explained in the [guide](docs/guide.md).
 
-**Agent.** `autofactory:foreman-agent` is the delegate foreman spawns for code-writing work.
+**Agent.** `autofactory:foreman-agent` is the delegate foreman spawns for code-writing work. Every agent foreman starts reads `skills/foreman/worker.md` first: the kickoff's bar is the whole bar, never ask the owner directly, report choices back.
 
 ## Credit
 
-Built on [pstack](https://github.com/backnotprop/pstack) by Lauren Tan (poteto), mirrored from [cursor/plugins](https://github.com/cursor/plugins/tree/main/pstack). Copied at upstream commit `25abb38559ddbabec563646224d09eff9a250eca` (2026-11-01), then trimmed to what foreman uses and rewritten for Claude Code. To pull later upstream changes, diff against a newer upstream commit by hand. MIT licensed; see `LICENSE`.
+Built on [pstack](https://github.com/backnotprop/pstack) by Lauren Tan (poteto), mirrored from [cursor/plugins](https://github.com/cursor/plugins/tree/main/pstack). Copied at upstream commit `25abb38559ddbabec563646224d09eff9a250eca` (2026-11-01), then trimmed to what foreman uses and rewritten for Claude Code. Synced by hand through upstream commit `bf0c7cd` (2026-11-26): shorter skill texts and the worker rules, adapted so the owner still makes decisions; upstream's Opus-first routing was not taken. To pull later upstream changes, diff against a newer upstream commit by hand. MIT licensed; see `LICENSE`.
 
 The `shape` skill and foreman's task loop are adapted from the brainstorming and subagent-driven-development skills in [superpowers](https://github.com/obra/superpowers) by Jesse Vincent. MIT licensed, Copyright (c) 2025 Jesse Vincent; the notice ships in `skills/shape/LICENSE` and `skills/foreman/references/task-loop/LICENSE`.
