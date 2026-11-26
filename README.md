@@ -36,7 +36,7 @@ An agentic software factory for Claude Code. One `foreman` skill routes every jo
 - `unslop`: cuts AI tells from writing.
 - `bro`: restates the last message in plain words.
 
-**Recipes** (`skills/foreman/playbooks/`). Feature, Bug fix, Refactoring, Perf issue, Hillclimb, Investigation, User report, Runtime forensics, Trace forensics, Prototype, Visual parity, Eval, Authoring a skill, Opening a PR, Autonomous run, Orchestrate, Multi-phase plan, Session pickup, Pause safely, Worktree cleanup.
+**Recipes** (`skills/foreman/playbooks/`). Feature, Bug fix, Refactoring, Perf issue, Hillclimb, Investigation, User report, Runtime forensics, Trace forensics, Prototype, Visual parity, Eval, Authoring a skill, Opening a PR, Autonomous run, Merge batch, Multi-phase plan, Session pickup, Pause safely, Worktree cleanup.
 
 **References** (`skills/foreman/references/`). The 24 engineering principles foreman cites and the project file template for `<repo>/.claude/foreman.md`.
 

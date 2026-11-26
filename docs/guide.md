@@ -205,7 +205,7 @@ All recipes live in `skills/foreman/playbooks/`.
 | Recipe | What it does | Example job |
 |---|---|---|
 | Autonomous run | Drives one long task to a checkable finish line without stopping. | "Keep going until all tests pass." |
-| Orchestrate | Runs a multi-day program with many helpers and many PRs. | "Own this migration until it lands." |
+| Merge batch | Lands a batch of finished PRs someone else wrote. Works out which depend on which, checks each, and lands the passing ones one at a time, in order. | "Merge these 12 PRs into dev." |
 | Multi-phase plan | Writes the plan for work that spans phases or several PRs. It does not build. | "Plan the move to the new payment provider." |
 
 For a large or odd job that fits no recipe, foreman uses `figure-it-out` to design a custom one.
