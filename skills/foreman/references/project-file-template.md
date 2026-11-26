@@ -13,6 +13,7 @@ Foreman step to the project skill that does it. An entry here overrides the plug
 | code review | `code-review` |
 | break-it check | `adversarial-verification` |
 | land | `finalize-worktree` |
+| lesson | `correct` (Foreman suggests it after a bug fix, never runs it) |
 
 ## Sizing
 

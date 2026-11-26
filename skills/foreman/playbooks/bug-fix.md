@@ -14,5 +14,6 @@ Be scientific. Every shipped line traces to runtime evidence. Belt-and-suspender
    This is the canonical **Sequence Work into Verifiable Units** principle, the failing test first and the fix on top.
 8. If the fix needs a schema change, write the migration file and code on the branch, then pause. After the yes, apply it per the project's rules, verify, re-prove, then continue. Never land code that depends on an unapplied migration.
 9. Land via the Step map `land` entry. Without a project file, run **Opening a PR**.
+10. Name the check that would have caught it (the **Encode Lessons in Structure** principle). Say what guard test or lint would have failed on this bug, and suggest it to the owner, naming the Step map `lesson` entry when there is one. Never run that entry yourself. It is the owner's call. If no check fits, log one line saying why via **show-me-your-work**.
 
-**Reply:** what was broken, root cause, fix, how you verified. Paste failing-then-passing repro output verbatim.
+**Reply:** what was broken, root cause, fix, how you verified, and the check you suggest (or why none fits). Paste failing-then-passing repro output verbatim.
