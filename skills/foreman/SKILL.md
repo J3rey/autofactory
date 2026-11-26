@@ -24,16 +24,14 @@ Remaining triggers:
 - Your first message on a task → open with the line from **Run visibility**, then tell the user, in your own words, their goal, the problem they are solving, and, if the task ships a change, the smallest change you expect to meet it. Don't wait for confirmation. If the evidence rules out the change the user asked for, show it and stop. Restate the user's goal in each subagent brief, and open each PR's `## Why` with it when foreman's PR body format applies. Unless the project sets its own reply style, open each final report with it too, your final reply included, except after a fully specified one-line edit.
 - Nontrivial change, architecture decision, or "are we sure?" → the **how** skill.
 - Fuzzy feature ask (no who, no definition of done, no screen or surface) → the **shape** skill, through the Feature or Prototype recipe's Shape step. If the owner's job names an interviewing skill ("grill me", "grill with docs", or a skill name) and it is installed, use that for Shape instead. If it isn't installed, say so and use **shape**.
-- About to `AskUserQuestion` on a "which approach", "how should I", or "what should this do" fork → classify it before you ask. If the answer is a fact you could observe by running something (behavior, timing, layout, output, perf, even whether an eval separates), it is not the human's to answer. Sketch it via the Prototype playbook (`playbooks/prototype.md`) and let the result decide. If the task is a read-only Investigation whose deliverable is a cited answer, stay in it and answer from the evidence rather than building a sketch. A product or preference call no experiment can settle, or an always-pause item, goes to the owner and the run pauses.
+- Starting any agent → the first line of its kickoff is `Read <path>/worker.md before anything else.`, with `<path>` the absolute path of this skill's folder. Keep the rest of the kickoff to the goal and the task, plus this file's absolute path for a `foreman-agent`.
+- A "which approach" or "what should this do" fork you could settle by running something → sketch it via `playbooks/prototype.md` and let the result decide, instead of asking. A product or preference call no experiment can settle, or an always-pause item, goes to the owner and the run pauses.
 - Any code → name the data shape first, and choose its organizing structure per **Model the Domain**.
-- Code crossing a function boundary → the **architect** skill, one design sketch before implementing.
-- Parallel fan-out → the **swarm** skill for coverage matrices, races, gauntlets, and exploration partitions.
-- Nontrivial multi-step → write the throughput checkpoint (Feature step 5).
+- Code crossing a function boundary → **architect**. Fan-out → **swarm**. Bakeoff → **arena**. Contested design → **interrogate**.
 - Any prose surface, your reply to the user included, and docs, RFCs, readmes, PR descriptions, and commit messages → the **unslop** skill. Write the reply per **Writing the reply**.
 - Before commit → reread the diff and cut slop yourself: restated comments, speculative guards, wrappers with one caller, and leftover debugging.
 - Shipping UI / IDE / CLI → drive the real surface: Playwright or a CDP browser for web and Electron, tmux or a PTY for CLIs and TUIs. For bug fixes, reproduce first on the same surface yourself. Hand to the user only under the narrow Bug fix step 2 exception. When you start a dev server, pick a free port (check with `lsof -ti :<port>`) and never assume the default, since other runs may hold it.
 - Running a benchmark, measuring perf yourself, or reporting a speedup or regression you measured → the **benchmark-checklist** skill before you report or act on the number.
-- Broken skill mid-task → fix it in its own PR. Don't block. Don't silently work around it.
 - Long, autonomous, or multi-phase work, or any task the user steps away from to review later ("going to bed", "trust it when i'm back", "/loop until X") → a decision trail via the **show-me-your-work** skill. Commit it when stakes need an auditable record. Keep it local otherwise.
 
 ## Principles
@@ -103,7 +101,7 @@ An answer relayed by the session that started this run counts as the owner's ans
 
 ## Subagents
 
-**Use `subagent_type: "autofactory:foreman-agent"` for any subagent you spawn inside a playbook step** (code-writing delegates, ad-hoc helpers). The chat that receives `/autofactory:foreman` runs the playbook. Never spawn a `foreman-agent` to run the playbook itself. Routed workflow skills (`how`, `why`, `interrogate`, `swarm`) set their own `subagent_type` for review on mixed models. Respect what the skill prescribes, don't override to `foreman-agent`.
+**Use `subagent_type: "autofactory:foreman-agent"` for any subagent you spawn directly inside a playbook step.** The chat that receives `/autofactory:foreman` runs the playbook itself. Routed workflow skills (`how`, `interrogate`, `swarm`) set their own `subagent_type`. Respect it.
 
 **Defaults for every `Agent` call.** Subagents run in the background and notify you when they finish, so keep working meanwhile. Pass file pointers, not inlined context. Set `model` and `effort` per role:
 
@@ -117,23 +115,13 @@ The routed skills (`how`, `why`, `swarm`, `architect`, `interrogate`) state thei
 
 **Match the model to the job.** Before each spawn, start from the role's default and pick the reasoning level the job needs. Raise `effort` one step, up to max, for the hardest or subtlest work. Lower it one step for judgment and two or more steps for routine work. Verification is the exception and stays at `sonnet` `high`. Change only the effort, and keep the model the role names, so a mixed `opus` and `sonnet` panel stays mixed. If `Agent` rejects the model or effort, don't try another adjusted value. Use the role's default and say so. If it rejects that too, omit `model` so the subagent runs on the parent model, and say so.
 
-You own every subagent's work. Review the diff and write your own summary, don't pass through what it said. A second opinion is the same prompt against a different model (`opus` against `sonnet`). Agreement is high-signal.
+You own every subagent's work. Review the diff and write your own summary. A second opinion is the same prompt on the other model (`opus` against `sonnet`).
 
-**Fresh subagents by default.** Give new work to a fresh subagent with consolidated scope, meaning the original brief, every later directive, and the prior agent's report and branch. This holds for a fix round, a follow-up, a retry, and the next queue item. A finished subagent can't be resumed, so spawn a fresh one with the earlier result pasted in. Continue a running subagent with `SendMessage` only when the new work strictly needs state that lives in that agent and is costly to move: its local checkout, its uncommitted changes, or a process it still runs, such as a dev server or a simulator. A stop or hold order to a running agent is not reuse. A role such as a PR owner outlives its agent. Once that agent returns, a fresh agent takes the role's next round. Chained follow-ups silently drop directives, so fire a fresh subagent with consolidated scope rather than trusting a "done" summary.
+**Fresh subagents by default.** Give a fix round, a follow-up, a retry, or the next queue item to a fresh subagent with the original brief, every later directive, and the prior agent's report and branch. Continue a running subagent with `SendMessage` only when the work needs state that lives in it and is costly to move: its checkout, its uncommitted changes, or a process it still runs.
 
 ## Writing the reply
 
-Unless the project sets its own reply style, write the reply clean as you draft it. A cleanup pass after drafting does not remove these patterns.
-
-- **Short declarative sentences.** One thought per sentence, ended with a period.
-- **No long-dash character anywhere.** Write a file-list bullet as a sentence ("`main.js` owns persistence and the IPC handlers") and a bold section header as its own sentence ("**Verification.** End to end via CDP").
-- **A colon as a mid-sentence connector is also out** (unslop rule 14). A colon before a list is fine.
-- **Terse is not an excuse to drop content.** Short sentences, but every section the playbook's reply names stays: details, tradeoffs, choices, open decisions.
-- **Frame impact for the consumer and the maintainer.** Name who the work is for (an end user, a colleague importing the library) and what changes for them before any implementation detail. Then what the next engineer who owns this code inherits. If you can't say what either would notice, the work or the explanation is off.
-- **Never fabricate a link, citation, or transcript reference.** Link only artifacts you produced or read this session.
-- **Every claim carries its evidence or its label in the same sentence.** Measured, inferred, or guess. A prediction or an unseen cause is a guess. Never hand the human a check you could run.
-
-Every playbook ends with a reply written this way, PR link as `https://github.com/<owner>/<repo>/pull/<number>`. Each playbook's own reply lines name only the content unique to that playbook.
+Unless the project sets its own reply style, write short declarative sentences with no long dash and no colon as a connector. Lead with what changes for the user. Give each claim its evidence or a label (measured, inferred, or guess). Never fabricate a link or citation. Never hand the human a check you could run. End with the PR link as `https://github.com/<owner>/<repo>/pull/<number>` when there is one.
 
 ## Comments
 

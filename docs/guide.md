@@ -166,7 +166,7 @@ flowchart TD
   - `figure-it-out` designs a custom recipe when none fits.
   - `unslop` cuts robotic phrasing from writing. `bro` restates the last message in plain words.
 - **Project skills** are the ones your own project already has (for example a code review skill). If the project file names them, foreman uses them for that step instead of its own.
-- **Helper agents** are fresh Claude workers foreman hands single tasks to. Foreman reviews everything they produce.
+- **Helper agents** are fresh Claude workers foreman hands single tasks to. Each one reads `skills/foreman/worker.md` first: stay inside the task's bar, never ask the owner directly, report choices back. Foreman reviews everything they produce.
 - **Principles** are 24 short engineering rules. Foreman reads one only when it applies it, and names it in the reply.
 
 ## 8. Recipes
